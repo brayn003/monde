@@ -1,0 +1,47 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="monde"
+run/main_scene="res://scenes/game.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+Constants="*res://scripts/global/constants.gd"
+Utils="*res://scripts/NEAT/utils.gd"
+Params="*res://scripts/NEAT/params.gd"
+Innovations="*res://scripts/NEAT/innovations.gd"
+
+[display]
+
+window/size/mode=2
+
+[dotnet]
+
+project/assembly_name="monde"
+
+[editor]
+
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true
+
+[physics]
+
+2d/stretch/mode="disabled"
+2d/canvas_textures/default_texture_filter=1
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"

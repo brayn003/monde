@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddwctcw2qky8d"]
+
+[ext_resource type="Script" path="res://scripts/world.gd" id="1_xwi2y"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_ke4sg"]
+font_size = 36
+
+[node name="Game" type="Node2D" groups=["all_bodies", "food", "leader_bodies", "slimes"]]
+
+[node name="World" type="Node" parent="."]
+script = ExtResource("1_xwi2y")
+
+[node name="Timer" type="Timer" parent="World"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.5, 0.5)
+
+[node name="Label" type="Label" parent="Camera2D"]
+offset_left = -3267.0
+offset_top = -1793.0
+offset_right = -3162.0
+offset_bottom = -1770.0
+label_settings = SubResource("LabelSettings_ke4sg")
+
+[connection signal="timeout" from="World/Timer" to="World" method="_on_clock_time_step"]
