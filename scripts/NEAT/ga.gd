@@ -8,8 +8,6 @@ by delegating the exact details of how each step is achieved to the other classe
 within this directory.
 """
 
-signal made_new_gen
-
 # curr_genome_id gets incremented for every new genome
 var curr_genome_id = 0
 # the current generation, starting with 1
@@ -156,7 +154,7 @@ func evaluate_generation() -> void:
 	generation_evaluated = true
 
 
-func next_generation() -> Array[Agent]:
+func next_generation() -> void:
 	"""Goes through every species, and tries to spawn their new members (=genomes)
 	either through crossover or asexual reproduction, until the max population size
 	is reached. The new genomes then generate an agent, which will handle the
@@ -212,9 +210,7 @@ func next_generation() -> Array[Agent]:
 	#if Params.population_size - num_spawned > 0:
 		#new_genomes += make_hybrids(Params.population_size - num_spawned)
 	# let ui know that it should update the species list
-	emit_signal("made_new_gen")
 	generation_evaluated = false
-	return curr_agents
 
 
 func find_species(new_genome: Genome) -> Species:

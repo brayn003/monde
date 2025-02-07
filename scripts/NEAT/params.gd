@@ -25,7 +25,7 @@ var default_visibility = 0
 
 # ----- new_generation method
 # Number of genomes agents existing at the same time (= one generation)
-var population_size = 400
+var population_size = 100
 # turn on/off printing info about past generation, when making a new generation
 var print_new_generation = true
 

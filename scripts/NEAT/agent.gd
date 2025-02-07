@@ -17,51 +17,46 @@ real or integer number that represents how well the agent has acted in this gene
 
 Lastly, the agent must emit a 'death' signal if it dies.
 """
-# Reference to the Genome the agent inherits
+
+# related to nn
 var genome: Genome
-# the body must be a scene due to the call to instance. If a simple script should
-# be used, change instance() to new()
-var body: Node
-# Reference to the neural network that is encoded by the genome
 var network: NeuralNet
-# Refers to the internal clock
+var body: Node
+
+# clock
 var clock: Timer
 var delta: float
-# the fitness only gets assigned when the body dies by calling body.get_fitness()
-var fitness = 0
-# once set to true the agent can be removed from curr_agents in ga.next_timestep()
-
 
 # life-cycle
 var born_on
 var died_on
 var is_dead = false
+var is_born = false
+
+# misc
+var fitness = 0
 
 func _init(_genome: Genome) -> void:
-	"""Called when creating new agent using ga
-	"""
 	genome = _genome
 	network = NeuralNet.new(genome.neurons, genome.links)
 	
 	body = load(Params.agent_body_path).instantiate()
 	body.birth.connect(on_body_birth)
 	body.death.connect(on_body_death)
-	delta = 1.0 / body.clock_speed
 	
+	delta = 1.0 / body.clock_speed
 	clock = Timer.new()
 	body.add_child(clock)
 	clock.wait_time = delta
 	clock.timeout.connect(_on_clock_tick)
 	
 func _on_clock_tick() -> void:
-	"""Gets agent sensory information, feeds it to network, and passes
-	network output to act method of the agent.
-	"""
-	var senses = body.sense(delta)
-	senses.append(get_age()) # senses age via agent
-	
-	var action = network.update(senses)
-	body.act(delta, action)
+	if not is_born or is_dead:
+		return
+	body.sense()
+	body.senses.append(get_age())
+	var actions = network.update(body.senses)
+	body.actions = actions
 	
 func get_age() -> float:
 	var age = 0.0
@@ -72,6 +67,7 @@ func get_age() -> float:
 	return age
 
 func on_body_birth() -> void:
+	is_born = true
 	born_on = Time.get_unix_time_from_system()
 	clock.start()
 
@@ -82,3 +78,4 @@ func on_body_death() -> void:
 	fitness = body.get_fitness()
 	genome.fitness = fitness
 	body.queue_free()
+	

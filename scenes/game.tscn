@@ -1,25 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://ddwctcw2qky8d"]
+[gd_scene load_steps=5 format=3 uid="uid://ddwctcw2qky8d"]
 
 [ext_resource type="Script" path="res://scripts/world.gd" id="1_xwi2y"]
+[ext_resource type="Script" path="res://scenes/camera.gd" id="2_ge1xu"]
+[ext_resource type="Script" path="res://scenes/background.gd" id="2_k65d7"]
+[ext_resource type="PackedScene" uid="uid://cr67naqj6ujyg" path="res://scenes/gui.tscn" id="3_i6vgi"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_ke4sg"]
-font_size = 36
+[node name="Game" type="Node2D"]
 
-[node name="Game" type="Node2D" groups=["all_bodies", "food", "leader_bodies", "slimes"]]
-
-[node name="World" type="Node" parent="."]
+[node name="World" type="Node2D" parent="."]
 script = ExtResource("1_xwi2y")
 
-[node name="Timer" type="Timer" parent="World"]
+[node name="BackgroundTrails" type="Node2D" parent="World"]
+script = ExtResource("2_k65d7")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(0.5, 0.5)
+[node name="Camera" type="Camera2D" parent="."]
+script = ExtResource("2_ge1xu")
 
-[node name="Label" type="Label" parent="Camera2D"]
-offset_left = -3267.0
-offset_top = -1793.0
-offset_right = -3162.0
-offset_bottom = -1770.0
-label_settings = SubResource("LabelSettings_ke4sg")
+[node name="GUI" parent="." instance=ExtResource("3_i6vgi")]
 
-[connection signal="timeout" from="World/Timer" to="World" method="_on_clock_time_step"]
+[connection signal="clock_tick" from="World" to="GUI" method="_on_world_clock_tick"]
+[connection signal="gen_tick" from="World" to="GUI" method="_on_world_gen_tick"]
