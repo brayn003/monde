@@ -1,9 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://cr67naqj6ujyg"]
+[gd_scene load_steps=4 format=3 uid="uid://cr67naqj6ujyg"]
 
-[ext_resource type="Script" path="res://scenes/gui.gd" id="1_sblbl"]
-[ext_resource type="Script" path="res://scripts/world_chart.gd" id="2_28iqq"]
-[ext_resource type="PackedScene" uid="uid://dlwq4kmdb3bhs" path="res://addons/easy_charts/control_charts/chart.tscn" id="3_tmhjs"]
-[ext_resource type="Script" path="res://scenes/time_controls.gd" id="4_luopl"]
+[ext_resource type="Script" path="res://game/gui/gui.gd" id="1_sblbl"]
+[ext_resource type="Script" path="res://game/gui/time_controls.gd" id="4_luopl"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_dkhbw"]
 
@@ -29,19 +27,6 @@ text = "Time: 0s
 Gen: 0
 Gen Step: 0"
 label_settings = SubResource("LabelSettings_dkhbw")
-
-[node name="WorldChart" type="Control" parent="Stats"]
-visible = false
-layout_mode = 2
-script = ExtResource("2_28iqq")
-
-[node name="Chart" parent="Stats/WorldChart" instance=ExtResource("3_tmhjs")]
-layout_mode = 2
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_right = 894.0
-offset_bottom = 479.0
 
 [node name="TimeControls" type="CenterContainer" parent="."]
 offset_right = 1152.0

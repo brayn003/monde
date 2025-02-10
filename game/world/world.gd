@@ -14,19 +14,17 @@ to detect this yet. This may cause successful agents to be stopped prematurely h
 signal clock_tick(world: World)
 signal gen_tick(world: World)
 
-const MAX_FOOD = 500
-const SLIME_SPAWN_HEIGHT = 2000
-const SLIME_SPAWN_WIDTH = 4000
-const SLIME_SPAWN_OFFSET = Vector2.ZERO
-const FOOD_SPAWN_HEIGHT = 2000
-const FOOD_SPAWN_WIDTH = 2000
-const FOOD_SPAWN_OFFSET = Vector2(0, 0)
+const MAX_FOOD = 1000
+@onready var SLIME_SPAWN_MIN = Vector2.ZERO
+@onready var SLIME_SPAWN_MAX = 3 * get_viewport_rect().size / 2
+@onready var FOOD_SPAWN_MIN = -4 * get_viewport_rect().size
+@onready var FOOD_SPAWN_MAX = 4 * get_viewport_rect().size
 
 var clock: Timer
 var curr_clock_time: int = 0
 var time_since_last_gen: int = 0
 # every generation_step a new generation is made. this gets increased over time.
-var generation_step: int = 15
+var generation_step: int = 60
 
 # fitness treshold is 100 secs
 var fitness_threshold = 100
@@ -36,8 +34,8 @@ var is_ready = false
 var slimes = []
 var food_items = []
 
-@onready var food_scene: Resource = preload("res://scenes/food.tscn")
-@onready var ga: GeneticAlgorithm = GeneticAlgorithm.new(19, 4, "res://scenes/Slime.tscn")
+@onready var food_scene: Resource = preload("res://game/food/food.tscn")
+@onready var ga: GeneticAlgorithm = GeneticAlgorithm.new(23, 5, "res://game/slime/slime.tscn")
 
 func _ready() -> void:
 	"""creates ga, adds the GeneticAlgorithm node as a child and places
@@ -57,13 +55,11 @@ func _ready() -> void:
 #func _process(delta: float) -> void:
 	#$BackgroundTrails.draw_trails(slimes)
 	
-func _generate_random_vector(
-	width = 2000, 
-	height = 1000):
+func _generate_random_pos(_min: Vector2, _max: Vector2):
 	var random = RandomNumberGenerator.new()
 	var random_pos = Vector2(
-		random.randf_range(0, width), 
-		random.randf_range(0, height))
+		random.randf_range(_min.x, _max.x), 
+		random.randf_range(_min.y, _max.y)) - global_position
 	return random_pos
 
 func _on_clock_time_step() -> void:
@@ -97,9 +93,9 @@ func _on_clock_time_step() -> void:
 		
 		print(ga.curr_agents.size(), " agents were spawned")
 		for agent in ga.curr_agents:
-			agent.body.position = _generate_random_vector(
-			SLIME_SPAWN_WIDTH,
-			SLIME_SPAWN_HEIGHT)
+			agent.body.position = _generate_random_pos(
+			SLIME_SPAWN_MIN,
+			SLIME_SPAWN_MAX)
 			agent.body.rotation = RandomNumberGenerator.new().randf_range(0, 2 * PI)
 			add_child(agent.body)
 			slimes.append(agent.body)
@@ -116,26 +112,22 @@ func add_initial_slimes() -> void:
 	"""
 	for i in Params.population_size:
 		var agent = ga.create_initial_agent()
-		agent.body.position = _generate_random_vector(
-			SLIME_SPAWN_WIDTH,
-			SLIME_SPAWN_HEIGHT)
-		agent.body.rotation = RandomNumberGenerator.new().randf_range(0, 2 * PI)
+		agent.body.position = _generate_random_pos(
+			SLIME_SPAWN_MIN,
+			SLIME_SPAWN_MAX)
+		agent.body.rotation = RandomNumberGenerator.new().randf_range(-PI, PI)
 		add_child(agent.body)
 		slimes.append(agent.body)
 		
 
 func reset_food() -> void:
-	var food_items = get_tree().get_nodes_in_group("food")
-	for food in food_items:
-		food.position = _generate_random_vector(
-			FOOD_SPAWN_WIDTH,
-			FOOD_SPAWN_HEIGHT)
+	var _food_items = get_tree().get_nodes_in_group("food")
+	for food in _food_items:
+		food.position = _generate_random_pos(FOOD_SPAWN_MIN, FOOD_SPAWN_MAX)
 		
-	var missing_count = MAX_FOOD - food_items.size()
-	print(missing_count, " new food items were added to the existing ", food_items.size())
+	var missing_count = MAX_FOOD - _food_items.size()
+	print(missing_count, " new food items were added to the existing ", _food_items.size())
 	for i in missing_count:
 		var food = food_scene.instantiate() as Area2D
-		food.position = _generate_random_vector(
-			FOOD_SPAWN_WIDTH,
-			FOOD_SPAWN_HEIGHT)
+		food.position = _generate_random_pos(FOOD_SPAWN_MIN, FOOD_SPAWN_MAX)
 		add_child(food)

@@ -76,6 +76,7 @@ func on_body_death() -> void:
 	died_on = Time.get_unix_time_from_system()
 	clock.stop()
 	fitness = body.get_fitness()
+	#fitness += get_age()
 	genome.fitness = fitness
 	body.queue_free()
 	

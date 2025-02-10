@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://ddwctcw2qky8d"]
+
+[ext_resource type="Script" path="res://game/world/world.gd" id="1_lvao2"]
+[ext_resource type="Script" path="res://game/world/camera.gd" id="3_unpnu"]
+[ext_resource type="PackedScene" uid="uid://cr67naqj6ujyg" path="res://game/gui/gui.tscn" id="4_byyxs"]
+
+[node name="World" type="Node2D"]
+script = ExtResource("1_lvao2")
+
+[node name="Camera" type="Camera2D" parent="."]
+script = ExtResource("3_unpnu")
+
+[node name="GUI" parent="." instance=ExtResource("4_byyxs")]
+
+[connection signal="clock_tick" from="." to="GUI" method="_on_world_clock_tick"]
+[connection signal="gen_tick" from="." to="GUI" method="_on_world_gen_tick"]

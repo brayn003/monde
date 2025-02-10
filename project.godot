@@ -11,16 +11,16 @@ config_version=5
 [application]
 
 config/name="monde"
-run/main_scene="res://scenes/game.tscn"
+run/main_scene="res://game/world/world.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Constants="*res://scripts/global/constants.gd"
-Utils="*res://scripts/NEAT/utils.gd"
-Params="*res://scripts/NEAT/params.gd"
-Innovations="*res://scripts/NEAT/innovations.gd"
+Constants="*res://game/_global/constants.gd"
+Utils="*res://game/genetic-algorithm/utils.gd"
+Params="*res://game/genetic-algorithm/params.gd"
+Innovations="*res://game/genetic-algorithm/innovations.gd"
 
 [display]
 
@@ -76,7 +76,8 @@ camera_zoom_in={
 [physics]
 
 2d/default_gravity_vector=Vector2(0, 0)
-2d/default_linear_damp=1.0
+2d/default_linear_damp=2.0
+2d/default_angular_damp=4.0
 2d/stretch/mode="disabled"
 2d/canvas_textures/default_texture_filter=1
 

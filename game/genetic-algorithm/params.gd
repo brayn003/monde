@@ -25,7 +25,7 @@ var default_visibility = 0
 
 # ----- new_generation method
 # Number of genomes agents existing at the same time (= one generation)
-var population_size = 100
+var population_size = 200
 # turn on/off printing info about past generation, when making a new generation
 var print_new_generation = true
 
@@ -100,10 +100,10 @@ enum NEURON_TYPE{input, bias, hidden, output}
 # because if a species is stale for a while it's mutation probabilities are changed
 # to the second value
 var prob_add_neuron = [0.05, 0.15]
-# default activation curve that neurons are initialized with. tanh default is 2.
+# default activation curve that neurons are initialized with. tanh default is 2. signm is 1
 # the other defaults can be found in the activation function definitions in the
 # neuralnet class.
-var default_curve = 3.0
+var default_curve = 1.0
 
 # ----- activation function mutations
 # probabilities of changing the curve of the activation function. This mutation
@@ -206,7 +206,7 @@ var is_runtype_active = true
 # since it is directly used as a parameter for creating a funcref in the NeuralNet
 # class. Currently implemented activation functions are: "sigm_activate",
 # "tanh_activate", "gauss_activate"
-var curr_activation_func = "tanh_activate"
+var curr_activation_func = "sigm_activate"
 # if set to true, input neurons pass their inputs through the defined activation
 # function.
 var activate_inputs = false

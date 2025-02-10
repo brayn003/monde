@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=3 uid="uid://c4eyndacxxo0o"]
+
+[ext_resource type="Script" path="res://game/slime/slime.gd" id="1_a4kvr"]
+[ext_resource type="Script" path="res://game/slime/slime_body.gd" id="2_ejy56"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_36muf"]
+particle_flag_disable_z = true
+gravity = Vector3(0, 0, 0)
+scale_min = 2.0
+scale_max = 2.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pukx8"]
+radius = 3.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vquuy"]
+radius = 5.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ytass"]
+radius = 2.0
+
+[node name="Slime2" type="RigidBody2D"]
+script = ExtResource("1_a4kvr")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+process_material = SubResource("ParticleProcessMaterial_36muf")
+
+[node name="Body" type="Node2D" parent="."]
+script = ExtResource("2_ejy56")
+
+[node name="CollisionBody" type="CollisionShape2D" parent="."]
+position = Vector2(-8, 0)
+shape = SubResource("CircleShape2D_pukx8")
+
+[node name="CollisionHead" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_vquuy")
+
+[node name="CollisionTail" type="CollisionShape2D" parent="."]
+position = Vector2(-13, 0)
+shape = SubResource("CircleShape2D_ytass")

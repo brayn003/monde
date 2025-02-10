@@ -8,8 +8,8 @@ var pan_speed = 8
 var zoom_speed = 1
 
 func _ready() -> void:
-	position = global_position + Vector2(0, 0)
-	zoom = Vector2(0.2, 0.2)
+	position = get_viewport_rect().size / 2
+	zoom = Vector2(1.0, 1.0)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventPanGesture:
