@@ -1,0 +1,19 @@
+[gd_scene load_steps=5 format=3 uid="uid://dn8he7axn0hin"]
+
+[ext_resource type="Script" path="res://game/Consumable/ConsumableBodyRender.gd" id="1_a6aod"]
+[ext_resource type="Script" path="res://game/Consumable/ConsumableBody.gd" id="1_cn60i"]
+[ext_resource type="Script" path="res://game/Consumable/Consumable.gd" id="1_dm63f"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ht82q"]
+
+[node name="Consumable" type="Node"]
+script = ExtResource("1_dm63f")
+
+[node name="Body" type="RigidBody2D" parent="."]
+script = ExtResource("1_cn60i")
+
+[node name="Render" type="Node2D" parent="Body"]
+script = ExtResource("1_a6aod")
+
+[node name="Collision" type="CollisionShape2D" parent="Body"]
+shape = SubResource("CircleShape2D_ht82q")

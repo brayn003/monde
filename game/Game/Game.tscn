@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://sgp3tvmaowly"]
+
+[ext_resource type="Script" path="res://game/Game/WorldManager.gd" id="1_w1lhb"]
+
+[node name="Game" type="Node"]
+
+[node name="WorldManager" type="Node" parent="."]
+script = ExtResource("1_w1lhb")

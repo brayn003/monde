@@ -11,16 +11,16 @@ config_version=5
 [application]
 
 config/name="monde"
-run/main_scene="res://game/world/world.tscn"
+run/main_scene="res://game/World/World.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Constants="*res://game/_global/constants.gd"
-Utils="*res://game/genetic-algorithm/utils.gd"
-Params="*res://game/genetic-algorithm/params.gd"
-Innovations="*res://game/genetic-algorithm/innovations.gd"
+Constants="*res://game/_global/Constants.gd"
+Utils="*res://game/NEAT/Utils.gd"
+Params="*res://game/NEAT/Params.gd"
+Innovations="*res://game/NEAT/Innovations.gd"
 
 [display]
 
@@ -35,6 +35,10 @@ project/assembly_name="monde"
 
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
+
+[gui]
+
+theme/custom="res://game/main.tres"
 
 [input]
 
@@ -76,12 +80,12 @@ camera_zoom_in={
 [physics]
 
 2d/default_gravity_vector=Vector2(0, 0)
-2d/default_linear_damp=2.0
-2d/default_angular_damp=4.0
+2d/default_linear_damp=1.0
+2d/default_angular_damp=2.0
 2d/stretch/mode="disabled"
 2d/canvas_textures/default_texture_filter=1
 
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
-environment/defaults/default_clear_color=Color(0.118581, 0.118581, 0.118581, 1)
+environment/defaults/default_clear_color=Color(0.0666667, 0.0666667, 0.0666667, 1)

@@ -1,0 +1,32 @@
+[gd_resource type="Theme" load_steps=4 format=3 uid="uid://bd34q0xaiafni"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jyprf"]
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+border_width_left = 1
+border_width_top = 2
+border_width_right = 1
+border_width_bottom = 2
+border_color = Color(0.133333, 0.133333, 0.133333, 1)
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sn2fo"]
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_1lb2i"]
+color = Color(0.2, 0.2, 0.2, 1)
+vertical = true
+
+[resource]
+HSlider/styles/slider = SubResource("StyleBoxFlat_jyprf")
+Label/font_sizes/font_size = 8
+MarginContainer/constants/margin_bottom = 8
+MarginContainer/constants/margin_left = 8
+MarginContainer/constants/margin_right = 8
+MarginContainer/constants/margin_top = 8
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_sn2fo")
+VSeparator/styles/separator = SubResource("StyleBoxLine_1lb2i")

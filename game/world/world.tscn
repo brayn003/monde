@@ -1,16 +1,33 @@
-[gd_scene load_steps=4 format=3 uid="uid://ddwctcw2qky8d"]
+[gd_scene load_steps=8 format=3 uid="uid://ddwctcw2qky8d"]
 
-[ext_resource type="Script" path="res://game/world/world.gd" id="1_lvao2"]
-[ext_resource type="Script" path="res://game/world/camera.gd" id="3_unpnu"]
-[ext_resource type="PackedScene" uid="uid://cr67naqj6ujyg" path="res://game/gui/gui.tscn" id="4_byyxs"]
+[ext_resource type="Script" path="res://game/World/World.gd" id="1_naktm"]
+[ext_resource type="Script" path="res://game/World/Camera.gd" id="2_0uvpy"]
+[ext_resource type="Texture2D" uid="uid://diahkntpfk86o" path="res://assets/spritesheets/grass_tileset.png" id="2_40dna"]
+[ext_resource type="Script" path="res://game/World/Terrain.gd" id="2_n41dy"]
+[ext_resource type="PackedScene" uid="uid://cr67naqj6ujyg" path="res://game/Gui/Gui.tscn" id="3_858v7"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4ubp5"]
+texture = ExtResource("2_40dna")
+texture_region_size = Vector2i(8, 8)
+1:1/size_in_atlas = Vector2i(2, 2)
+1:1/0 = 0
+1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSet" id="TileSet_xjbl8"]
+physics_layer_0/collision_layer = 1
+sources/0 = SubResource("TileSetAtlasSource_4ubp5")
 
 [node name="World" type="Node2D"]
-script = ExtResource("1_lvao2")
+script = ExtResource("1_naktm")
+
+[node name="Terrain" type="TileMapLayer" parent="."]
+tile_set = SubResource("TileSet_xjbl8")
+script = ExtResource("2_n41dy")
 
 [node name="Camera" type="Camera2D" parent="."]
-script = ExtResource("3_unpnu")
+script = ExtResource("2_0uvpy")
 
-[node name="GUI" parent="." instance=ExtResource("4_byyxs")]
+[node name="Gui" parent="." instance=ExtResource("3_858v7")]
 
-[connection signal="clock_tick" from="." to="GUI" method="_on_world_clock_tick"]
-[connection signal="gen_tick" from="." to="GUI" method="_on_world_gen_tick"]
+[connection signal="clock_tick" from="." to="Gui" method="_on_world_clock_tick"]
+[connection signal="gen_tick" from="." to="Gui" method="_on_world_gen_tick"]

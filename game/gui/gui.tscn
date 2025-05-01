@@ -1,32 +1,115 @@
-[gd_scene load_steps=4 format=3 uid="uid://cr67naqj6ujyg"]
+[gd_scene load_steps=7 format=3 uid="uid://cr67naqj6ujyg"]
 
-[ext_resource type="Script" path="res://game/gui/gui.gd" id="1_sblbl"]
-[ext_resource type="Script" path="res://game/gui/time_controls.gd" id="4_luopl"]
+[ext_resource type="Script" path="res://game/Gui/Gui.gd" id="1_sblbl"]
+[ext_resource type="StyleBox" uid="uid://cxbnp2v3ef4ph" path="res://game/Gui/OuterPanel.tres" id="2_djdge"]
+[ext_resource type="StyleBox" uid="uid://dusw1emb40eor" path="res://game/Gui/InnerPanel.tres" id="2_ut6pp"]
+[ext_resource type="Script" path="res://game/Gui/OrganismStat.gd" id="4_4xxwx"]
+[ext_resource type="Script" path="res://game/Gui/NetworkGraph.gd" id="4_8xvcf"]
+[ext_resource type="Script" path="res://game/Gui/TimeControls.gd" id="4_luopl"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_dkhbw"]
-
-[node name="GUI" type="CanvasLayer"]
+[node name="Gui" type="CanvasLayer"]
 script = ExtResource("1_sblbl")
 
-[node name="Stats" type="VBoxContainer" parent="."]
-offset_right = 65.0
-offset_bottom = 65.0
+[node name="TopRight" type="VBoxContainer" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -136.0
+offset_top = 8.0
+offset_right = -8.0
+offset_bottom = 201.0
+grow_horizontal = 0
+theme_override_constants/separation = 8
 
-[node name="MarginContainer" type="MarginContainer" parent="Stats"]
+[node name="Stats" type="PanelContainer" parent="TopRight"]
 layout_mode = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 8
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 8
+theme_override_styles/panel = ExtResource("2_djdge")
 
-[node name="Stats" type="Label" parent="Stats/MarginContainer"]
+[node name="Container" type="VBoxContainer" parent="TopRight/Stats"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Title" type="Label" parent="TopRight/Stats/Container"]
+layout_mode = 2
+text = "Current"
+
+[node name="Panel" type="PanelContainer" parent="TopRight/Stats/Container"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_ut6pp")
+
+[node name="Label" type="Label" parent="TopRight/Stats/Container/Panel"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-text = "Time: 0s
-Gen: 0
-Gen Step: 0"
-label_settings = SubResource("LabelSettings_dkhbw")
+text = "Population: 100
+Time: 0s
+Current Gen: 0 (60s)"
+
+[node name="PrevGen" type="PanelContainer" parent="TopRight"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_djdge")
+
+[node name="Container" type="VBoxContainer" parent="TopRight/PrevGen"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Title" type="Label" parent="TopRight/PrevGen/Container"]
+layout_mode = 2
+text = "Prev Gen"
+
+[node name="Panel" type="PanelContainer" parent="TopRight/PrevGen/Container"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_ut6pp")
+
+[node name="Label" type="Label" parent="TopRight/PrevGen/Container/Panel"]
+layout_mode = 2
+text = "Gen: 0
+New species: 0
+Dead species: 0
+Total species: 0
+Avg. fitness: 0
+Best fitness: 0"
+justification_flags = 227
+
+[node name="TopLeft" type="VBoxContainer" parent="."]
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 50.0
+offset_bottom = 32.0
+
+[node name="OrganismPanel" type="PanelContainer" parent="TopLeft"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_djdge")
+
+[node name="Container" type="VBoxContainer" parent="TopLeft/OrganismPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TopLeft/OrganismPanel/Container"]
+layout_mode = 2
+text = "Network"
+
+[node name="Panel" type="PanelContainer" parent="TopLeft/OrganismPanel/Container"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_ut6pp")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TopLeft/OrganismPanel/Container/Panel"]
+layout_mode = 2
+
+[node name="Stats" type="VBoxContainer" parent="TopLeft/OrganismPanel/Container/Panel/HBoxContainer"]
+custom_minimum_size = Vector2(120, 230)
+layout_mode = 2
+script = ExtResource("4_4xxwx")
+
+[node name="VSeparator" type="VSeparator" parent="TopLeft/OrganismPanel/Container/Panel/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="Graph" type="Control" parent="TopLeft/OrganismPanel/Container/Panel/HBoxContainer"]
+custom_minimum_size = Vector2(120, 230)
+layout_mode = 2
+script = ExtResource("4_8xvcf")
 
 [node name="TimeControls" type="CenterContainer" parent="."]
 offset_right = 1152.0
@@ -46,8 +129,10 @@ theme_override_constants/margin_bottom = 8
 [node name="TimeSlider" type="HSlider" parent="TimeControls/HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
+min_value = 0.25
 max_value = 4.0
 step = 0.25
+value = 0.25
 
 [node name="Label" type="Label" parent="TimeControls/HBoxContainer"]
 custom_minimum_size = Vector2(40, 0)

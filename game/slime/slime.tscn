@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://c4eyndacxxo0o"]
+[gd_scene load_steps=9 format=3 uid="uid://c4eyndacxxo0o"]
 
-[ext_resource type="Script" path="res://game/slime/slime.gd" id="1_a4kvr"]
-[ext_resource type="Script" path="res://game/slime/slime_body.gd" id="2_ejy56"]
+[ext_resource type="Script" path="res://game/Slime/Slime.gd" id="1_0dard"]
+[ext_resource type="Script" path="res://game/Slime/SlimeBody.gd" id="2_m1btl"]
+[ext_resource type="Script" path="res://game/Slime/SlimeBodyRender.gd" id="3_lst5e"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_36muf"]
 particle_flag_disable_z = true
@@ -18,22 +19,41 @@ radius = 5.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_ytass"]
 radius = 2.0
 
-[node name="Slime2" type="RigidBody2D"]
-script = ExtResource("1_a4kvr")
+[sub_resource type="CircleShape2D" id="CircleShape2D_efxey"]
+radius = 20.0
 
-[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+[node name="Slime" type="Node"]
+script = ExtResource("1_0dard")
+
+[node name="Body" type="RigidBody2D" parent="."]
+contact_monitor = true
+max_contacts_reported = 1
+script = ExtResource("2_m1btl")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="Body"]
 process_material = SubResource("ParticleProcessMaterial_36muf")
 
-[node name="Body" type="Node2D" parent="."]
-script = ExtResource("2_ejy56")
+[node name="Render" type="Node2D" parent="Body"]
+script = ExtResource("3_lst5e")
 
-[node name="CollisionBody" type="CollisionShape2D" parent="."]
+[node name="CollisionBody" type="CollisionShape2D" parent="Body"]
 position = Vector2(-8, 0)
 shape = SubResource("CircleShape2D_pukx8")
 
-[node name="CollisionHead" type="CollisionShape2D" parent="."]
+[node name="CollisionHead" type="CollisionShape2D" parent="Body"]
 shape = SubResource("CircleShape2D_vquuy")
 
-[node name="CollisionTail" type="CollisionShape2D" parent="."]
+[node name="CollisionTail" type="CollisionShape2D" parent="Body"]
 position = Vector2(-13, 0)
 shape = SubResource("CircleShape2D_ytass")
+
+[node name="Clickable" type="Area2D" parent="Body"]
+position = Vector2(-5, 0)
+monitoring = false
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body/Clickable"]
+shape = SubResource("CircleShape2D_efxey")
+
+[connection signal="body_entered" from="Body" to="." method="_on_body_body_entered"]
+[connection signal="input_event" from="Body/Clickable" to="." method="_on_clickable_input_event"]
