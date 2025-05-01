@@ -1,4 +1,4 @@
-class_name SlimeBody
+class_name PikiBody
 extends RigidBody2D
 
 var thrust_ratio = 1.0
@@ -41,7 +41,7 @@ func _ready() -> void:
 		ray_casts.push_front(caster)
 		cast_angle += cast_arc
 	
-	add_to_group("slimes")
+	add_to_group("pikis")
 	#endregion
 
 #func _process(delta: float) -> void:
@@ -56,8 +56,8 @@ func action_move(state: PhysicsDirectBodyState2D) -> void:
 	#var wants_to_move_up = actions[ACTION.MOVE_UP] > 0.5 if is_auto else Input.is_action_pressed("ui_up")
 	#var wants_to_move_down = actions[ACTION.MOVE_DOWN] > 0.5 if is_auto else Input.is_action_pressed("ui_down")
 	
-	var intensity_up = curr_actions[Slime.ACTION.MOVE_UP]
-	var intensity_down = curr_actions[Slime.ACTION.MOVE_DOWN]
+	var intensity_up = curr_actions[Piki.ACTION.MOVE_UP]
+	var intensity_down = curr_actions[Piki.ACTION.MOVE_DOWN]
 	
 	
 	if intensity_up or intensity_down :
@@ -70,8 +70,8 @@ func action_move(state: PhysicsDirectBodyState2D) -> void:
 		state.apply_force(Vector2())
 		
 func action_turn(state: PhysicsDirectBodyState2D) -> void:
-	var intensity_left = curr_actions[Slime.ACTION.TURN_LEFT]
-	var intensity_right = curr_actions[Slime.ACTION.TURN_RIGHT]
+	var intensity_left = curr_actions[Piki.ACTION.TURN_LEFT]
+	var intensity_right = curr_actions[Piki.ACTION.TURN_RIGHT]
 	var rotation_direction = 0
 	
 	if intensity_right:
@@ -83,7 +83,7 @@ func action_turn(state: PhysicsDirectBodyState2D) -> void:
 	state.apply_torque(rotation_direction * torque)
 
 #func action_rest(delta: float) -> void:
-	#var wants_to_rest = curr_actions[Slime.ACTION.REST] > 0.7
+	#var wants_to_rest = curr_actions[Piki.ACTION.REST] > 0.7
 	#if wants_to_rest and not is_moving:
 		#if hp < max_hp:
 			#hp += 1.0 * delta
@@ -120,7 +120,7 @@ func sense_items_in_sight() -> Array[float]:
 				var _item_type = -0.1
 				if collision_item is Consumable or collision_item is Plant:
 					_item_type = 1.0
-				elif collision_item is Slime:
+				elif collision_item is Piki:
 					_item_type = 0.5
 
 					

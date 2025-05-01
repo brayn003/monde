@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://c4eyndacxxo0o"]
 
-[ext_resource type="Script" path="res://game/Slime/Slime.gd" id="1_0dard"]
-[ext_resource type="Script" path="res://game/Slime/SlimeBody.gd" id="2_m1btl"]
-[ext_resource type="Script" path="res://game/Slime/SlimeBodyRender.gd" id="3_lst5e"]
+[ext_resource type="Script" path="res://game/beasts/Piki/Piki.gd" id="1_0dard"]
+[ext_resource type="Script" path="res://game/beasts/Piki/PikiBody.gd" id="2_m1btl"]
+[ext_resource type="Script" path="res://game/beasts/Piki/PikiBodyRender.gd" id="3_lst5e"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_36muf"]
 particle_flag_disable_z = true

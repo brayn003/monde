@@ -1,4 +1,4 @@
-class_name Slime
+class_name Piki
 extends Organism
 
 enum ACTION {
@@ -27,7 +27,7 @@ var spawn_wait_time = 60
 var is_auto = true
 var age = 0.0
 
-@onready var body: SlimeBody = $Body
+@onready var body: PikiBody = $Body
 @onready var clickable: Area2D = $Body/Clickable
 
 func _process(delta):

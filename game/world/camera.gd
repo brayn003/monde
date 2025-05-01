@@ -1,7 +1,7 @@
 class_name Camera
 extends Camera2D
 
-var focused_organism: Slime
+var focused_organism: Piki
 
 const min_zoom = 0.1
 const max_zoom = 4
@@ -37,7 +37,7 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("camera_zoom_in"):
 		update_zoom()
 		
-func focus_on_organism(organism: Slime):
+func focus_on_organism(organism: Organism):
 	focused_organism = organism
 		
 func update_zoom():

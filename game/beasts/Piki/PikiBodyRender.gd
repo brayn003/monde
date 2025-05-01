@@ -1,5 +1,5 @@
 @tool
-class_name SlimeBodyRender
+class_name PikiBodyRender
 extends Node2D
 
 var size = Constants.SLIME_SIZE

@@ -1,6 +1,6 @@
 extends Control
 
-var _focused_organism: Slime
+var _focused_organism: Organism
 
 var _keys = ["hp", "energy", "food_eaten", "no_of_spawns", "spawn_wait_time", "generation", "age"]
 var _fields: Dictionary = {}
@@ -36,7 +36,7 @@ func _update_table_values() -> void:
 	for key in _keys:
 		_fields[key].text = str(snapped(_focused_organism[key], 0.01))
 		
-func focus_on_organism(organism: Slime) -> void:
+func focus_on_organism(organism: Organism) -> void:
 	_clear_table()
 	_render_table()
 	_focused_organism = organism

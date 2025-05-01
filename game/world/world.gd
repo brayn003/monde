@@ -11,7 +11,7 @@ cars end up just loitering around the track, and I haven't implemented a method
 to detect this yet. This may cause successful agents to be stopped prematurely however.
 """
 
-const slime_scene: Resource = preload("res://game/Slime/Slime.tscn")
+const piki_scene: Resource = preload("res://game/beasts/Piki/Piki.tscn")
 const plant_scene: Resource = preload("res://game/Plant/Plant.tscn")
 const planet_scene: Resource = preload("res://game/Planets/DryTerran/DryTerran.tscn")
 
@@ -35,9 +35,9 @@ var generation_step: int = 60
 # fitness treshold is 100 secs
 var fitness_threshold = 100
 
-var curr_slimes = []
+var curr_pikis = []
 
-@onready var ga: GeneticAlgorithm = GeneticAlgorithm.new(6, 4, "res://game/Slime/Slime.tscn")
+@onready var ga: GeneticAlgorithm = GeneticAlgorithm.new(6, 4, "res://game/Piki/Piki.tscn")
 @onready var gui: Gui = $Gui
 @onready var camera: Camera = $Camera
 @onready var terrain: Terrain = $Terrain
@@ -45,7 +45,7 @@ var curr_slimes = []
 func _ready() -> void:
 	#_create_planet()
 	add_child(ga)
-	_spawn_initial_slimes()
+	_spawn_initial_pikis()
 	_spawn_plants()
 	_start_clock()
 	
@@ -63,48 +63,48 @@ func _input(event: InputEvent) -> void:
 		gui.focus_on_organism(null)
 		camera.focus_on_organism(null)
 	
-#region slimes
+#region pikis
 
-func _on_slime_death(slime: Slime) -> void:
-	ga.free_genome(slime.genome)
-	curr_slimes.erase(slime)
-	slime.queue_free()
-	if gui.focused_organism == slime:
-		gui.focus_on_organism(curr_slimes[0] if curr_slimes.size() > 0 else null)
-	if camera.focused_organism == slime:
-		camera.focus_on_organism(curr_slimes[0] if curr_slimes.size() > 0 else null)
+func _on_piki_death(piki: Piki) -> void:
+	ga.free_genome(piki.genome)
+	curr_pikis.erase(piki)
+	piki.queue_free()
+	if gui.focused_organism == piki:
+		gui.focus_on_organism(curr_pikis[0] if curr_pikis.size() > 0 else null)
+	if camera.focused_organism == piki:
+		camera.focus_on_organism(curr_pikis[0] if curr_pikis.size() > 0 else null)
 
-func _on_slime_spawn(parent_slime: Slime) -> void:
-	if curr_slimes.size() >= MAX_SLIME:
+func _on_piki_spawn(parent_piki: Piki) -> void:
+	if curr_pikis.size() >= MAX_SLIME:
 		return
-	var genome = ga.create_upgraded_genome(parent_slime.genome)
-	create_slime(genome, parent_slime.body.position, random_angle(), parent_slime.generation)
+	var genome = ga.create_upgraded_genome(parent_piki.genome)
+	create_piki(genome, parent_piki.body.position, random_angle(), parent_piki.generation)
 	
-func _on_slime_clicked(slime: Slime) -> void:
-	gui.focus_on_organism(slime)
-	camera.focus_on_organism(slime)
+func _on_piki_clicked(piki: Piki) -> void:
+	gui.focus_on_organism(piki)
+	camera.focus_on_organism(piki)
 
-func create_slime(
+func create_piki(
 	genome: Genome, 
 	pos: Vector2 = Vector2(0, 0), 
 	_rotation: float = 0,
 	_prev_gen: int = 0
 	) -> void:
-	var slime: Slime = slime_scene.instantiate()
-	slime.generation = _prev_gen + 1
-	slime.add_genome(genome)
-	slime.death.connect(_on_slime_death)
-	slime.spawn.connect(_on_slime_spawn)
-	slime.clicked.connect(_on_slime_clicked)
-	add_child(slime)
-	slime.body.position = pos
-	slime.body.rotation = _rotation
-	curr_slimes.append(slime)
+	var piki: Piki = piki_scene.instantiate()
+	piki.generation = _prev_gen + 1
+	piki.add_genome(genome)
+	piki.death.connect(_on_piki_death)
+	piki.spawn.connect(_on_piki_spawn)
+	piki.clicked.connect(_on_piki_clicked)
+	add_child(piki)
+	piki.body.position = pos
+	piki.body.rotation = _rotation
+	curr_pikis.append(piki)
 
-func _spawn_initial_slimes() -> void:
+func _spawn_initial_pikis() -> void:
 	for i in MAX_SLIME:
 		var genome = ga.create_base_genome()
-		create_slime(genome, random_pos(SLIME_SPAWN_MIN, SLIME_SPAWN_MAX), random_angle())
+		create_piki(genome, random_pos(SLIME_SPAWN_MIN, SLIME_SPAWN_MAX), random_angle())
 
 #endregion
 
@@ -124,10 +124,10 @@ func _on_clock_time_step() -> void:
 	if curr_clock_time % generation_step == 0:
 		gen_tick.emit(self)
 		time_since_last_gen = 0
-		var highest_slime_age = 0.0
-		for slime in curr_slimes:
-			highest_slime_age = maxf(highest_slime_age, slime.calc_age())
-		print("The oldest slime is living for " + str(highest_slime_age))
+		var highest_piki_age = 0.0
+		for piki in curr_pikis:
+			highest_piki_age = maxf(highest_piki_age, piki.calc_age())
+		print("The oldest piki is living for " + str(highest_piki_age))
 		print("=====Generation Step=====")
 		ga.evaluate_generation()
 		print("=========================")

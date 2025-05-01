@@ -22,7 +22,7 @@ func focus_on_organism(organism: Organism) -> void:
 
 func _on_world_clock_tick(world: World) -> void:
 	var current_stats_text = ""
-	current_stats_text += "Population: " + str(world.curr_slimes.size())
+	current_stats_text += "Population: " + str(world.curr_pikis.size())
 	current_stats_text += "\nTime: " + str(world.curr_clock_time) + "s"
 	current_stats_text += "\nCurrent Gen: " + str(world.ga.curr_generation) + " (" + str(world.generation_step) + "s)"
 	current_stats.text = current_stats_text
