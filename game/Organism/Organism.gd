@@ -27,7 +27,7 @@ var genome: Genome
 var nn: NeuralNet
 
 # clock
-var clock_speed = Constants.SLIME_CLOCK_SPEED
+var clock_speed = Constants.PIKI_CLOCK_SPEED
 var clock: Timer
 
 # life-cycle

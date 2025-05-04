@@ -1,14 +1,12 @@
 class_name Consumable
 extends Node
 
-var radius = 10.0
-var energy = 20.0
+
+const ENERGY_VALUE = Constants.FRUIT_ENERGY
+
+var radius = Constants.FRUIT_SIZE / 2.0
 
 @onready var body: ConsumableBody = $Body
 
 func _ready() -> void:
 	add_to_group("consumables")
-
-func consume() -> float:
-	queue_free()
-	return energy

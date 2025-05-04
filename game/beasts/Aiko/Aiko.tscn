@@ -1,8 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://c4eyndacxxo0o"]
+[gd_scene load_steps=9 format=3 uid="uid://q0wikltjrxha"]
 
-[ext_resource type="Script" path="res://game/beasts/Piki/Piki.gd" id="1_0dard"]
-[ext_resource type="Script" path="res://game/beasts/Piki/PikiBody.gd" id="2_m1btl"]
-[ext_resource type="Script" path="res://game/beasts/Piki/PikiBodyRender.gd" id="3_7wxl6"]
+[ext_resource type="Script" path="res://game/beasts/Aiko/Aiko.gd" id="1_fo5to"]
+[ext_resource type="Script" path="res://game/beasts/Aiko/AikoBody.gd" id="2_awsia"]
+[ext_resource type="Script" path="res://game/beasts/Aiko/AikoBodyRender.gd" id="3_o8tbg"]
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_36muf"]
 particle_flag_disable_z = true
@@ -10,41 +10,40 @@ gravity = Vector3(0, 0, 0)
 scale_min = 2.0
 scale_max = 2.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_vquuy"]
-radius = 2.5
-
 [sub_resource type="CircleShape2D" id="CircleShape2D_pukx8"]
-radius = 1.5
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_ytass"]
-radius = 1.0
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_efxey"]
 radius = 6.0
 
-[node name="Piki" type="Node"]
-script = ExtResource("1_0dard")
+[sub_resource type="CircleShape2D" id="CircleShape2D_vquuy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ytass"]
+radius = 4.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_efxey"]
+radius = 25.0
+
+[node name="Aiko" type="Node"]
+script = ExtResource("1_fo5to")
 
 [node name="Body" type="RigidBody2D" parent="."]
 contact_monitor = true
 max_contacts_reported = 1
-script = ExtResource("2_m1btl")
+script = ExtResource("2_awsia")
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="Body"]
 process_material = SubResource("ParticleProcessMaterial_36muf")
 
 [node name="Render" type="Node2D" parent="Body"]
-script = ExtResource("3_7wxl6")
+script = ExtResource("3_o8tbg")
+
+[node name="CollisionBody" type="CollisionShape2D" parent="Body"]
+position = Vector2(-16, 0)
+shape = SubResource("CircleShape2D_pukx8")
 
 [node name="CollisionHead" type="CollisionShape2D" parent="Body"]
 shape = SubResource("CircleShape2D_vquuy")
 
-[node name="CollisionBody" type="CollisionShape2D" parent="Body"]
-position = Vector2(-4, 0)
-shape = SubResource("CircleShape2D_pukx8")
-
 [node name="CollisionTail" type="CollisionShape2D" parent="Body"]
-position = Vector2(-6.5, 0)
+position = Vector2(-26, 0)
 shape = SubResource("CircleShape2D_ytass")
 
 [node name="Clickable" type="Area2D" parent="Body"]
@@ -53,7 +52,7 @@ monitoring = false
 monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Body/Clickable"]
-position = Vector2(2.5, 0)
+position = Vector2(-5, 0)
 shape = SubResource("CircleShape2D_efxey")
 
 [connection signal="body_entered" from="Body" to="." method="_on_body_body_entered"]

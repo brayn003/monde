@@ -1,12 +1,12 @@
 class_name Camera
 extends Camera2D
 
-var focused_organism: Piki
+var focused_organism: Organism
 
-const min_zoom = 0.1
-const max_zoom = 4
+const min_zoom = 0.4
+const max_zoom = 2
 
-var touch_sensitivity = 40
+var touch_sensitivity = 10
 var pan_speed = 8
 var zoom_speed = 1
 

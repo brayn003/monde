@@ -12,19 +12,16 @@ to detect this yet. This may cause successful agents to be stopped prematurely h
 """
 
 const piki_scene: Resource = preload("res://game/beasts/Piki/Piki.tscn")
-const plant_scene: Resource = preload("res://game/Plant/Plant.tscn")
-const planet_scene: Resource = preload("res://game/Planets/DryTerran/DryTerran.tscn")
+const aiko_scene: Resource = preload("res://game/beasts/Aiko/Aiko.tscn")
 
-const MAX_SLIME = 200
-const MAX_PLANTS = 20
+const INITIAL_PIKIS = 100
+const INITIAL_AIKOS = 40
 
 signal clock_tick(world: World)
 signal gen_tick(world: World)
 
-@onready var SLIME_SPAWN_MIN = -4 * get_viewport_rect().size
-@onready var SLIME_SPAWN_MAX = 4 * get_viewport_rect().size
-@onready var PLANT_SPAWN_MIN = -4 * get_viewport_rect().size
-@onready var PLANT_SPAWN_MAX = 4 * get_viewport_rect().size
+@onready var SPAWN_MIN = Vector2(Constants.WORLD_BOUND_LEFT.x, Constants.WORLD_BOUND_TOP.y)
+@onready var SPAWN_MAX = Vector2(Constants.WORLD_BOUND_RIGHT.x, Constants.WORLD_BOUND_BOTTOM.y)
 
 var clock: Timer
 var curr_clock_time: int = 0
@@ -36,48 +33,40 @@ var generation_step: int = 60
 var fitness_threshold = 100
 
 var curr_pikis = []
+var curr_aikos = []
 
-@onready var ga: GeneticAlgorithm = GeneticAlgorithm.new(6, 4, "res://game/Piki/Piki.tscn")
-@onready var gui: Gui = $Gui
-@onready var camera: Camera = $Camera
+@onready var piki_ga: GeneticAlgorithm = GeneticAlgorithm.new(9, 2, "res://game/Piki/Piki.tscn")
+#@onready var aiko_ga: GeneticAlgorithm = GeneticAlgorithm.new(6, 4, "res://game/Aiko/Aiko.tscn")
+
+@onready var gui: Gui = $"../Gui"
+@onready var camera: Camera = $"../Camera"
 @onready var terrain: Terrain = $Terrain
 
 func _ready() -> void:
 	#_create_planet()
-	add_child(ga)
+	add_child(piki_ga)
+	#add_child(aiko_ga)
 	_spawn_initial_pikis()
-	_spawn_plants()
+	#_spawn_initial_aikos()
 	_start_clock()
-	
-
-func _create_planet() -> void:
-	var planet: DryTerran = planet_scene.instantiate()
-	add_child(planet)
-	planet.set_seed(2219401622)
-	planet.set_pixels(200)
-	planet.position = Vector2.ZERO
-	planet.set_dither(true)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.keycode == KEY_ESCAPE:
 		gui.focus_on_organism(null)
 		camera.focus_on_organism(null)
-	
-#region pikis
 
+#region pikis
 func _on_piki_death(piki: Piki) -> void:
-	ga.free_genome(piki.genome)
+	piki_ga.free_genome(piki.genome)
 	curr_pikis.erase(piki)
 	piki.queue_free()
 	if gui.focused_organism == piki:
-		gui.focus_on_organism(curr_pikis[0] if curr_pikis.size() > 0 else null)
+		gui.focus_on_organism(curr_pikis[-1] if curr_pikis.size() > 0 else null)
 	if camera.focused_organism == piki:
-		camera.focus_on_organism(curr_pikis[0] if curr_pikis.size() > 0 else null)
+		camera.focus_on_organism(curr_pikis[-1] if curr_pikis.size() > 0 else null)
 
 func _on_piki_spawn(parent_piki: Piki) -> void:
-	if curr_pikis.size() >= MAX_SLIME:
-		return
-	var genome = ga.create_upgraded_genome(parent_piki.genome)
+	var genome = piki_ga.create_upgraded_genome(parent_piki.genome)
 	create_piki(genome, parent_piki.body.position, random_angle(), parent_piki.generation)
 	
 func _on_piki_clicked(piki: Piki) -> void:
@@ -100,18 +89,62 @@ func create_piki(
 	piki.body.position = pos
 	piki.body.rotation = _rotation
 	curr_pikis.append(piki)
+	piki.add_to_group("pikis")
 
 func _spawn_initial_pikis() -> void:
-	for i in MAX_SLIME:
-		var genome = ga.create_base_genome()
-		create_piki(genome, random_pos(SLIME_SPAWN_MIN, SLIME_SPAWN_MAX), random_angle())
+	for i in INITIAL_PIKIS:
+		var genome = piki_ga.create_base_genome()
+		create_piki(genome, random_pos(SPAWN_MIN, SPAWN_MAX), random_angle())
 
 #endregion
 
-#region clock
+#region aiko
 
+#func _on_aiko_death(aiko: Aiko) -> void:
+	#aiko_ga.free_genome(aiko.genome)
+	#curr_aikos.erase(aiko)
+	#aiko.queue_free()
+	#if gui.focused_organism == aiko:
+		#gui.focus_on_organism(curr_aikos[0] if curr_aikos.size() > 0 else null)
+	#if camera.focused_organism == aiko:
+		#camera.focus_on_organism(curr_aikos[0] if curr_aikos.size() > 0 else null)
+#
+#func _on_aiko_spawn(parent_aiko: Aiko) -> void:
+	#if curr_aikos.size() >= MAX_BEASTS:
+		#return
+	#var genome = aiko_ga.create_upgraded_genome(parent_aiko.genome)
+	#create_aiko(genome, parent_aiko.body.position, random_angle(), parent_aiko.generation)
+	#
+#func _on_aiko_clicked(aiko: Aiko) -> void:
+	#gui.focus_on_organism(aiko)
+	#camera.focus_on_organism(aiko)
+#
+#func create_aiko(
+	#genome: Genome, 
+	#pos: Vector2 = Vector2(0, 0), 
+	#_rotation: float = 0,
+	#_prev_gen: int = 0
+	#) -> void:
+	#var aiko: Aiko = aiko_scene.instantiate()
+	#aiko.generation = _prev_gen + 1
+	#aiko.add_genome(genome)
+	#aiko.death.connect(_on_aiko_death)
+	#aiko.spawn.connect(_on_aiko_spawn)
+	#aiko.clicked.connect(_on_aiko_clicked)
+	#add_child(aiko)
+	#aiko.body.position = pos
+	#aiko.body.rotation = _rotation
+	#curr_aikos.append(aiko)
+#
+#func _spawn_initial_aikos() -> void:
+	#for i in INITIAL_AIKOS:
+		#var genome = aiko_ga.create_base_genome()
+		#create_aiko(genome, random_pos(AIKO_SPAWN_MIN, AIKO_SPAWN_MAX), random_angle())
+
+#endregion
+#
+#region clock
 func _start_clock():
-	clock_tick.emit(self)
 	clock = Timer.new()
 	add_child(clock)
 	clock.wait_time = 1.0
@@ -121,44 +154,26 @@ func _start_clock():
 func _on_clock_time_step() -> void:
 	curr_clock_time += 1
 	clock_tick.emit(self)
+	
+	terrain.generate_fruits()
+	
 	if curr_clock_time % generation_step == 0:
 		gen_tick.emit(self)
 		time_since_last_gen = 0
+		
 		var highest_piki_age = 0.0
 		for piki in curr_pikis:
 			highest_piki_age = maxf(highest_piki_age, piki.calc_age())
-		print("The oldest piki is living for " + str(highest_piki_age))
-		print("=====Generation Step=====")
-		ga.evaluate_generation()
-		print("=========================")
-		ga.curr_generation += 1
+		piki_ga.evaluate_generation()
+		piki_ga.curr_generation += 1
+		
+		#var highest_aiko_age = 0.0
+		#for aiko in curr_aikos:
+			#highest_aiko_age = maxf(highest_aiko_age, aiko.calc_age())
+		#aiko_ga.evaluate_generation()
+		#aiko_ga.curr_generation += 1
 
 #endregion
-
-#func reset_food() -> void:
-	#var _food_items = get_tree().get_nodes_in_group("food")
-	##for food in _food_items:
-		##food.position = random_pos(FOOD_SPAWN_MIN, FOOD_SPAWN_MAX)
-		#
-	#var missing_count = MAX_FOOD - _food_items.size()
-	#print(missing_count, " new food items were added to the existing ", _food_items.size())
-	#for i in missing_count:
-		#var food = food_scene.instantiate() as Area2D
-		#food.position = random_pos(FOOD_SPAWN_MIN, FOOD_SPAWN_MAX)
-		#add_child(food)
-		
-func _on_spawn(child: Node, from: Node) -> void:
-	add_child(child)
-	var origin = from.body.position
-	child.body.position = random_pos(origin + Vector2(-20, -20), origin + Vector2(20, 20))
-	child.body.rotation = random_angle()
-
-func _spawn_plants() -> void:
-	for i in MAX_PLANTS:
-		var plant: Plant = plant_scene.instantiate()
-		plant.spawn.connect(_on_spawn)
-		add_child(plant)
-		plant.body.position = random_pos(PLANT_SPAWN_MIN, PLANT_SPAWN_MAX)
 
 
 #region utils
@@ -167,10 +182,7 @@ func random_pos(_min: Vector2, _max: Vector2):
 	var pos = Vector2(
 		random.randf_range(_min.x, _max.x), 
 		random.randf_range(_min.y, _max.y)) - global_position
-	var terrain_coords = terrain.local_to_map(pos)
-	if terrain.get_cell_source_id(terrain_coords) == -1:
-		return pos
-	return random_pos(_min, _max)
+	return pos
 
 func random_angle():
 	var random = RandomNumberGenerator.new()

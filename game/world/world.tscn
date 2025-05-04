@@ -1,30 +1,45 @@
-[gd_scene load_steps=8 format=3 uid="uid://ddwctcw2qky8d"]
+[gd_scene load_steps=9 format=3 uid="uid://ddwctcw2qky8d"]
 
 [ext_resource type="Script" path="res://game/World/World.gd" id="1_naktm"]
-[ext_resource type="Script" path="res://game/World/Camera.gd" id="2_0uvpy"]
-[ext_resource type="Texture2D" uid="uid://diahkntpfk86o" path="res://assets/spritesheets/grass_tileset.png" id="2_40dna"]
-[ext_resource type="Script" path="res://game/World/Terrain.gd" id="2_n41dy"]
-[ext_resource type="PackedScene" uid="uid://cr67naqj6ujyg" path="res://game/Gui/Gui.tscn" id="3_858v7"]
+[ext_resource type="Script" path="res://game/World/WorldBounds.gd" id="2_a2jxo"]
+[ext_resource type="Script" path="res://game/World/WorldTerrain.gd" id="2_n41dy"]
+[ext_resource type="Script" path="res://game/World/WorldBoundsRender.gd" id="3_o7ah8"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4ubp5"]
-texture = ExtResource("2_40dna")
-texture_region_size = Vector2i(8, 8)
-1:1/size_in_atlas = Vector2i(2, 2)
-1:1/0 = 0
-1:1/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_owxwr"]
+normal = Vector2(0, 1)
 
-[sub_resource type="TileSet" id="TileSet_xjbl8"]
-physics_layer_0/collision_layer = 1
-sources/0 = SubResource("TileSetAtlasSource_4ubp5")
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_ebiq8"]
+normal = Vector2(-1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_y5jfs"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_uri2a"]
+normal = Vector2(1, 0)
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_naktm")
 
-[node name="Terrain" type="TileMapLayer" parent="."]
-tile_set = SubResource("TileSet_xjbl8")
+[node name="Boundaries" type="StaticBody2D" parent="."]
+script = ExtResource("2_a2jxo")
+
+[node name="Render" type="Node2D" parent="Boundaries"]
+script = ExtResource("3_o7ah8")
+
+[node name="Top" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(1000, 0)
+shape = SubResource("WorldBoundaryShape2D_owxwr")
+
+[node name="Right" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(2000, 1000)
+shape = SubResource("WorldBoundaryShape2D_ebiq8")
+
+[node name="Bottom" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(1000, 2000)
+shape = SubResource("WorldBoundaryShape2D_y5jfs")
+
+[node name="Left" type="CollisionShape2D" parent="Boundaries"]
+position = Vector2(0, 1000)
+shape = SubResource("WorldBoundaryShape2D_uri2a")
+
+[node name="Terrain" type="Node2D" parent="."]
 script = ExtResource("2_n41dy")
-
-[node name="Camera" type="Camera2D" parent="."]
-script = ExtResource("2_0uvpy")
-
-[node name="Gui" parent="." instance=ExtResource("3_858v7")]

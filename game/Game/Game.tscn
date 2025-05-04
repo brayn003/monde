@@ -1,8 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://sgp3tvmaowly"]
+[gd_scene load_steps=4 format=3 uid="uid://bcgp5okatb23g"]
 
-[ext_resource type="Script" path="res://game/Game/WorldManager.gd" id="1_w1lhb"]
+[ext_resource type="PackedScene" uid="uid://ddwctcw2qky8d" path="res://game/World/World.tscn" id="1_1ietr"]
+[ext_resource type="PackedScene" uid="uid://cr67naqj6ujyg" path="res://game/Gui/Gui.tscn" id="1_jhd47"]
+[ext_resource type="Script" path="res://game/World/Camera.gd" id="2_s6ner"]
 
 [node name="Game" type="Node"]
 
-[node name="WorldManager" type="Node" parent="."]
-script = ExtResource("1_w1lhb")
+[node name="World" parent="." instance=ExtResource("1_1ietr")]
+
+[node name="Camera" type="Camera2D" parent="."]
+script = ExtResource("2_s6ner")
+
+[node name="Gui" parent="." instance=ExtResource("1_jhd47")]
+
+[connection signal="clock_tick" from="World" to="Gui" method="_on_world_clock_tick"]

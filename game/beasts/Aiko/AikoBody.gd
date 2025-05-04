@@ -1,4 +1,4 @@
-class_name PikiBody
+class_name AikoBody
 extends RigidBody2D
 
 var thrust_ratio = 1.0
@@ -11,15 +11,15 @@ var movement_ratio = 1.0
 # traits
 var max_linear_velocity = 200
 var max_angular_velocity = TAU
-var thrust =  Constants.PIKI_THRUST * thrust_ratio * movement_ratio
-var torque = Constants.PIKI_TORQUE * torque_ratio  * movement_ratio
+var thrust =  Constants.AIKO_THRUST * thrust_ratio * movement_ratio
+var torque = Constants.AIKO_TORQUE * torque_ratio  * movement_ratio
 
 # vision
-var vision_range = Constants.PIKI_VISION_RANGE * vision_range_ratio
-var vision_angle = Constants.PIKI_VISION_ANGLE * vision_angle_ratio
+var vision_range = Constants.AIKO_VISION_RANGE * vision_range_ratio
+var vision_angle = Constants.AIKO_VISION_ANGLE * vision_angle_ratio
 var ray_casts: Array[RayCast2D] = []
-var no_of_ray_casts_per_zone = 6
-var no_of_vision_zones = 3
+var no_of_ray_casts_per_zone = 40
+var no_of_vision_zones = 1
 var no_of_ray_casts = no_of_ray_casts_per_zone * no_of_vision_zones
 
 var is_moving = false
@@ -41,6 +41,7 @@ func _ready() -> void:
 		ray_casts.push_front(caster)
 		cast_angle += cast_arc
 	
+	add_to_group("pikis")
 	#endregion
 
 #func _process(delta: float) -> void:
@@ -54,35 +55,44 @@ func _integrate_forces(state):
 func action_move(state: PhysicsDirectBodyState2D) -> void:
 	#var wants_to_move_up = actions[ACTION.MOVE_UP] > 0.5 if is_auto else Input.is_action_pressed("ui_up")
 	#var wants_to_move_down = actions[ACTION.MOVE_DOWN] > 0.5 if is_auto else Input.is_action_pressed("ui_down")
-	var final_force = Vector2.ZERO
-	var move_intensity = remap(curr_actions[Piki.ACTION.MOVE], 0, 1, -1, 1)
-	if move_intensity < -0.2 or move_intensity > 0.2:
-		is_moving = true
-		if move_intensity > 0:
-			final_force = thrust.rotated(rotation) * move_intensity
-		elif move_intensity < 0:
-			final_force = -1 * thrust.rotated(rotation) * 0.2 * move_intensity
 	
-	state.apply_force(final_force)
+	var intensity_up = curr_actions[Aiko.ACTION.MOVE_UP]
+	var intensity_down = curr_actions[Aiko.ACTION.MOVE_DOWN]
+	
+	
+	if intensity_up or intensity_down :
+		is_moving = true
+		if intensity_up:
+			state.apply_force(thrust.rotated(rotation) * intensity_up)
+		if intensity_down:
+			state.apply_force( thrust.rotated(rotation) * (-1) * 0.2 * intensity_down)
+	else:
+		state.apply_force(Vector2())
 		
 func action_turn(state: PhysicsDirectBodyState2D) -> void:
-	var turn_intensity = remap(curr_actions[Piki.ACTION.TURN], 0, 1, -1, 1) 
-	if turn_intensity < -0.2 or turn_intensity > 0.2:
-		state.apply_torque(turn_intensity * torque)
+	var intensity_left = curr_actions[Aiko.ACTION.TURN_LEFT]
+	var intensity_right = curr_actions[Aiko.ACTION.TURN_RIGHT]
+	var rotation_direction = 0
+	
+	if intensity_right:
+		rotation_direction += 1 * intensity_right
+	if intensity_left:
+		rotation_direction -= 1 * intensity_left
+	state.apply_torque(rotation_direction * torque)
 
 #func action_rest(delta: float) -> void:
-	#var wants_to_rest = curr_actions[Piki.ACTION.REST] > 0.7
+	#var wants_to_rest = curr_actions[Aiko.ACTION.REST] > 0.7
 	#if wants_to_rest and not is_moving:
 		#if hp < max_hp:
 			#hp += 1.0 * delta
 			#consume_energy(1.0 * delta)
 	
-#func sense_physical_state() -> Array[float]:
-	#var senses: Array[float] = []
-	#senses.append(linear_velocity.length())
-	#senses.append(remap(linear_velocity.angle(), -TAU, TAU, -1, 1))
-	#senses.append(remap(rotation, -TAU, TAU, -1, 1))
-	#return senses
+func sense_physical_state() -> Array[float]:
+	var senses: Array[float] = []
+	senses.append(linear_velocity.length())
+	senses.append(remap(linear_velocity.angle(), -TAU, TAU, -1, 1))
+	senses.append(remap(rotation, -TAU, TAU, -1, 1))
+	return senses
 	
 func sense_items_in_sight() -> Array[float]:
 	var senses: Array[float] = []
@@ -105,17 +115,13 @@ func sense_items_in_sight() -> Array[float]:
 				var _relative_distance = remap(distance, 0, vision_range, 0, 1)
 				var _relative_angle = remap(angle, -PI, PI, -1, 1)
 				
-				var _item_type = 0.0
-				if collision_item is ConsumableBody:
-					_item_type = 1.0
-				elif collision_item is PlantBody:
-					_item_type = 0.3
-				elif collision_item is AikoBody:
-					_item_type = -0.9
+				var _item_type = -0.1
+				if collision_item is ConsumableBody or collision_item is PlantBody:
+					_item_type = 0.0
 				elif collision_item is PikiBody:
-					_item_type = 0.8
-				elif collision_item is WorldBounds:
-					_item_type = 0.1
+					_item_type = 1.0
+				elif collision_item	is AikoBody:
+					_item_type = 0.5
 
 					
 				if _relative_distance < relative_distance:

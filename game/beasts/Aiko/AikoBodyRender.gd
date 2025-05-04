@@ -1,9 +1,9 @@
 @tool
-class_name PikiBodyRender
+class_name AikoBodyRender
 extends Node2D
 
-var size = Constants.PIKI_SIZE
-var vision_angle = Constants.PIKI_VISION_ANGLE
+var size = Constants.AIKO_SIZE
+var vision_angle = Constants.AIKO_VISION_ANGLE
 
 var head_radius = (0.5 * size) / 2
 var body_radius = (0.3 * size) / 2
@@ -19,9 +19,9 @@ func _process(_delta: float) -> void:
 		queue_redraw()
 
 func draw_body() -> void:
-	draw_circle(head_position, head_radius, Color.DARK_TURQUOISE, true)
-	draw_circle(body_position, body_radius, Color.DARK_TURQUOISE, true)
-	draw_circle(tail_position, tail_radius, Color.DARK_TURQUOISE, true)
+	draw_circle(head_position, head_radius, Color.MAGENTA, true)
+	draw_circle(body_position, body_radius, Color.MAGENTA, true)
+	draw_circle(tail_position, tail_radius, Color.MAGENTA, true)
 	
 func draw_eyes() -> void:
 	var eye_positions = [
@@ -30,7 +30,7 @@ func draw_eyes() -> void:
 	]
 	for eye_pos in eye_positions:
 		draw_circle(eye_pos, eye_radius, Color.WHITE, true)
-		draw_circle(eye_pos, 0.5, Color.BLACK, true)
+		draw_circle(eye_pos, 2, Color.BLACK, true)
 	
 	
 func _draw() -> void:

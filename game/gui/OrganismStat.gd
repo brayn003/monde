@@ -2,7 +2,7 @@ extends Control
 
 var _focused_organism: Organism
 
-var _keys = ["hp", "energy", "food_eaten", "no_of_spawns", "spawn_wait_time", "generation", "age"]
+var _keys = ["hp", "energy", "food_eaten", "no_of_spawns", "spawn_wait_time", "eat_wait_time", "generation", "age"]
 var _fields: Dictionary = {}
 
 func _process(_delta: float) -> void:

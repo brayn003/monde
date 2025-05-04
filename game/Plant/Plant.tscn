@@ -10,8 +10,6 @@ radius = 20.0
 [node name="Plant" type="Node"]
 script = ExtResource("1_os8n4")
 
-[node name="Clock" type="Timer" parent="."]
-
 [node name="Body" type="StaticBody2D" parent="."]
 script = ExtResource("2_juabr")
 
@@ -21,4 +19,4 @@ script = ExtResource("2_hu75e")
 [node name="Collision" type="CollisionShape2D" parent="Body"]
 shape = SubResource("CircleShape2D_fc2ew")
 
-[connection signal="timeout" from="Clock" to="." method="_on_clock_timeout"]
+[connection signal="spawn_fruit" from="." to="." method="_on_spawn_fruit"]

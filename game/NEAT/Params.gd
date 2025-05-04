@@ -41,9 +41,9 @@ var print_new_generation = true
 # keep this number low, but definitely not too low. 40%-50% of the num of inputs
 # is a good target to start with. It should also approach the number of inputs that
 # are assumed to be important.
-var num_initial_links = 3
+var num_initial_links = 2
 # maximum amount of neurons, for performance reasons. can be set arbitrarily
-var max_neuron_amt = 100
+var max_neuron_amt = 10
 
 # ----- Chaining
 # if prevent_chaining is true, only split links that connect to neurons having
@@ -80,10 +80,10 @@ var highlighter_width = 3
 
 # ----- mating
 # Probability of skipping crossover generating new genomes
-var prob_asex = 0.25
+var prob_asex = 0.1
 # probability of gene being inherited from the less fit parent. Lower number better.
 # THIS IS NOT THE RATE OF SEX-REPRODUCTION. That would be 1 - prob_asex
-var gene_swap_rate = 0.35
+var gene_swap_rate = 0.25
 # when crossing over 2 individuals within the pool, pick random parents, or parents
 # with similar fitness scores. keeping it false (=based on fitness) seems to yield
 # the best results.
