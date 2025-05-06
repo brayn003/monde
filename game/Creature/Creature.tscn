@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://b2oxb43eipvsc"]
+
+[ext_resource type="Script" path="res://game/Creature/Creature.gd" id="1_mtnbv"]
+[ext_resource type="Script" path="res://game/Creature/CreatureBody.gd" id="2_565lh"]
+[ext_resource type="Script" path="res://game/Creature/CreatureBodyRender.gd" id="3_w8mn1"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fytw4"]
+radius = 5.0
+
+[node name="Creature" type="Node"]
+script = ExtResource("1_mtnbv")
+
+[node name="Body" type="RigidBody2D" parent="."]
+script = ExtResource("2_565lh")
+
+[node name="CollisionBody" type="CollisionShape2D" parent="Body"]
+shape = SubResource("CircleShape2D_fytw4")
+
+[node name="Render" type="Node2D" parent="Body"]
+script = ExtResource("3_w8mn1")

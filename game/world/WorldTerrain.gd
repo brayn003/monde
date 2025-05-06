@@ -27,8 +27,8 @@ func _ready_plant_terrain() -> void:
 		for y in range(_top_bound, _bottom_bound - 1):
 			var noise_val = _fnl.get_noise_2d(x, y)
 			if noise_val > 0.38:
-				var _cell_x = (x * _cell_size) + (_cell_size / 2)
-				var _cell_y = (y * _cell_size) + (_cell_size / 2)
+				var _cell_x = (x * _cell_size) + (_cell_size / 2.0)
+				var _cell_y = (y * _cell_size) + (_cell_size / 2.0)
 				_spawn_plant(Vector2(_cell_x, _cell_y))
 
 func _spawn_plant(pos: Vector2) -> void:

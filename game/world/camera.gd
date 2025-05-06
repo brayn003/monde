@@ -1,7 +1,7 @@
 class_name Camera
 extends Camera2D
 
-var focused_organism: Organism
+var selected_entity: Creature
 
 const min_zoom = 0.4
 const max_zoom = 2
@@ -14,13 +14,13 @@ func _ready() -> void:
 	position = get_viewport_rect().size / 2
 	zoom = Vector2(1.0, 1.0)
 	
-func _process(delta: float) -> void:
-	if is_instance_valid(focused_organism):
+func _process(_delta: float) -> void:
+	if is_instance_valid(selected_entity):
 		#zoom = Vector2(1, 1)
-		position = focused_organism.body.position
+		position = selected_entity.body.position
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not focused_organism and event is InputEventPanGesture:
+	if not selected_entity and event is InputEventPanGesture:
 			position += event.delta * touch_sensitivity
 			
 	if event is InputEventMagnifyGesture:
@@ -37,8 +37,8 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("camera_zoom_in"):
 		update_zoom()
 		
-func focus_on_organism(organism: Organism):
-	focused_organism = organism
+func select_entity(creature: Creature):
+	selected_entity = creature
 		
 func update_zoom():
 	zoom += clamp(zoom_speed, min_zoom, max_zoom)

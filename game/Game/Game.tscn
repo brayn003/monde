@@ -12,5 +12,3 @@
 script = ExtResource("2_s6ner")
 
 [node name="Gui" parent="." instance=ExtResource("1_jhd47")]
-
-[connection signal="clock_tick" from="World" to="Gui" method="_on_world_clock_tick"]

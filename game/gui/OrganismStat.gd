@@ -1,14 +1,21 @@
 extends Control
 
-var _focused_organism: Organism
+var _selected_entity: Creature
 
-var _keys = ["hp", "energy", "food_eaten", "no_of_spawns", "spawn_wait_time", "eat_wait_time", "generation", "age"]
+var _keys = [
+	"_hp", 
+	"_energy", 
+	"_age",
+	"_food_count", 
+	"_food_wait_time", 
+	"_offspring_count", 
+	"_offspring_wait_time", 
+	"generation"]
 var _fields: Dictionary = {}
 
 func _process(_delta: float) -> void:
-	if _focused_organism:
+	if _selected_entity:
 		_update_table_values()
-	
 
 func _add_table_field(key: String, value: String) -> void:
 	var hbox = HBoxContainer.new()
@@ -19,8 +26,10 @@ func _add_table_field(key: String, value: String) -> void:
 	_fields[key] = valuelabel
 	add_child(hbox)
 	keyLabel.text = key
-	keyLabel.custom_minimum_size.x = 60
+	keyLabel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	valuelabel.text = value
+	valuelabel.custom_minimum_size.x = 30
+	#valuelabel.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
 func _clear_table() -> void:
 	for child in get_children():
@@ -29,15 +38,15 @@ func _clear_table() -> void:
 func _render_table() -> void:
 	for key in _keys:
 		_add_table_field(key, "-")
-	if _focused_organism:
+	if _selected_entity:
 		_update_table_values()
 			
 func _update_table_values() -> void:
 	for key in _keys:
-		_fields[key].text = str(snapped(_focused_organism[key], 0.01))
+		_fields[key].text = str(snapped(_selected_entity[key], 0.01))
 		
-func focus_on_organism(organism: Organism) -> void:
+func select_entity(entity: Creature) -> void:
 	_clear_table()
 	_render_table()
-	_focused_organism = organism
+	_selected_entity = entity
 		

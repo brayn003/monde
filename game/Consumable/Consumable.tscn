@@ -10,6 +10,7 @@
 script = ExtResource("1_dm63f")
 
 [node name="Body" type="RigidBody2D" parent="."]
+max_contacts_reported = 1
 script = ExtResource("1_cn60i")
 
 [node name="Render" type="Node2D" parent="Body"]

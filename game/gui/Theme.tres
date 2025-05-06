@@ -1,4 +1,22 @@
-[gd_resource type="Theme" load_steps=4 format=3 uid="uid://bd34q0xaiafni"]
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://bd34q0xaiafni"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ihfou"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ysi6s"]
+bg_color = Color(0.0666667, 0.0666667, 0.0666667, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jyprf"]
 bg_color = Color(0.133333, 0.133333, 0.133333, 1)
@@ -22,6 +40,10 @@ color = Color(0.2, 0.2, 0.2, 1)
 vertical = true
 
 [resource]
+Button/constants/outline_size = 1
+Button/font_sizes/font_size = 8
+Button/styles/normal = SubResource("StyleBoxFlat_ihfou")
+Button/styles/pressed = SubResource("StyleBoxFlat_ysi6s")
 HSlider/styles/slider = SubResource("StyleBoxFlat_jyprf")
 Label/font_sizes/font_size = 8
 MarginContainer/constants/margin_bottom = 8

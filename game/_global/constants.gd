@@ -8,21 +8,32 @@ const WORLD_BOUND_LEFT = Vector2(0, 1000)
 const PIKI_MAX_HP = 10.0
 const PIKI_MAX_ENERGY = 100.0
 const PIKI_INITIAL_ENERGY = 20.0
+const PIKI_MAX_AGE = 60.0
+const PIKI_OFFSPRING_INITIAL_WAIT = 60.0
+const PIKI_OFFSPRING_WAIT = 30.0
+const PIKI_OFFSPRING_ENERGY_COST = 20.0
 const PIKI_THRUST = Vector2(200, 0)
 const PIKI_TORQUE = 200.0
 const PIKI_VISION_RANGE = 1000.0
-const PIKI_VISION_ANGLE = (TAU) / 1.5  # 180 deg
+const PIKI_VISION_ANGLE = (TAU) / 2  # 180 deg
 const PIKI_SIZE = 10.0
 const PIKI_CLOCK_SPEED = 2 # in Hz - no of times per sec
+const PIKI_COLOR = Color.DARK_TURQUOISE
 
-const AIKO_MAX_HP = 100.0
-const AIKO_MAX_ENERGY = 200.0
-const AIKO_THRUST = Vector2(300, 0)
-const AIKO_TORQUE = 2000.0
-const AIKO_VISION_RANGE = 5000.0
-const AIKO_VISION_ANGLE = (TAU) / 4  # 120 deg
+const AIKO_MAX_HP = 20.0
+const AIKO_MAX_ENERGY = 400.0
+const AIKO_INITIAL_ENERGY = 40.0
+const AIKO_MAX_AGE = 120
+const AIKO_OFFSPRING_INITIAL_WAIT = 60.0
+const AIKO_OFFSPRING_WAIT = 30.0
+const AIKO_OFFSPRING_ENERGY_COST = 40.0
+const AIKO_THRUST = Vector2(100, 0)
+const AIKO_TORQUE = 200.0
+const AIKO_VISION_RANGE = 3000.0
+const AIKO_VISION_ANGLE = (TAU) / 3  # 120 deg
 const AIKO_SIZE = 40.0
 const AIKO_CLOCK_SPEED = 20 # in Hz - no of times per sec
+const AIKO_COLOR = Color.MAGENTA
 
 const PLANT_SIZE = 1.0
 const PLANT_MAX_HP = 10.0
@@ -34,3 +45,10 @@ const FRUIT_ENERGY = 30.0
 
 const MAX_FRUITS = 2000
 const MAX_PIKIS = 200
+
+enum Family {
+	NONE = -1,
+	BASE,
+	PIKI,
+	AIKO,
+}

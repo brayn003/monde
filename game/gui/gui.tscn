@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cr67naqj6ujyg"]
+[gd_scene load_steps=8 format=3 uid="uid://cr67naqj6ujyg"]
 
 [ext_resource type="Script" path="res://game/Gui/Gui.gd" id="1_sblbl"]
 [ext_resource type="StyleBox" uid="uid://cxbnp2v3ef4ph" path="res://game/Gui/OuterPanel.tres" id="2_djdge"]
+[ext_resource type="Script" path="res://game/Gui/SpawnToolbar.gd" id="2_qixae"]
 [ext_resource type="StyleBox" uid="uid://dusw1emb40eor" path="res://game/Gui/InnerPanel.tres" id="2_ut6pp"]
 [ext_resource type="Script" path="res://game/Gui/OrganismStat.gd" id="4_4xxwx"]
 [ext_resource type="Script" path="res://game/Gui/NetworkGraph.gd" id="4_8xvcf"]
@@ -10,14 +11,37 @@
 [node name="Gui" type="CanvasLayer"]
 script = ExtResource("1_sblbl")
 
+[node name="SpawnToolbar" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 33.0
+offset_bottom = 8.0
+script = ExtResource("2_qixae")
+
+[node name="C" type="VBoxContainer" parent="SpawnToolbar"]
+offset_right = 25.0
+offset_bottom = 44.0
+
+[node name="PikiButton" type="Button" parent="SpawnToolbar/C"]
+layout_mode = 2
+toggle_mode = true
+text = "Piki"
+
+[node name="AikoButton" type="Button" parent="SpawnToolbar/C"]
+layout_mode = 2
+toggle_mode = true
+text = "Aiko"
+
 [node name="TopRight" type="VBoxContainer" parent="."]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -136.0
+offset_left = -138.0
 offset_top = 8.0
 offset_right = -8.0
-offset_bottom = 201.0
+offset_bottom = 144.0
 grow_horizontal = 0
 theme_override_constants/separation = 8
 
@@ -79,6 +103,48 @@ Avg. fitness: 0
 Best fitness: 0"
 justification_flags = 227
 
+[node name="BottomLeft" type="VBoxContainer" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -270.0
+offset_right = 273.0
+offset_bottom = -8.0
+grow_vertical = 0
+
+[node name="OrganismPanel" type="PanelContainer" parent="BottomLeft"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_djdge")
+
+[node name="Container" type="VBoxContainer" parent="BottomLeft/OrganismPanel"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="BottomLeft/OrganismPanel/Container"]
+layout_mode = 2
+text = "Network"
+
+[node name="Panel" type="PanelContainer" parent="BottomLeft/OrganismPanel/Container"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("2_ut6pp")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BottomLeft/OrganismPanel/Container/Panel"]
+layout_mode = 2
+
+[node name="Stats" type="VBoxContainer" parent="BottomLeft/OrganismPanel/Container/Panel/HBoxContainer"]
+custom_minimum_size = Vector2(120, 230)
+layout_mode = 2
+script = ExtResource("4_4xxwx")
+
+[node name="VSeparator" type="VSeparator" parent="BottomLeft/OrganismPanel/Container/Panel/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="Graph" type="Control" parent="BottomLeft/OrganismPanel/Container/Panel/HBoxContainer"]
+custom_minimum_size = Vector2(120, 230)
+layout_mode = 2
+script = ExtResource("4_8xvcf")
+
 [node name="BottomRight" type="VBoxContainer" parent="."]
 anchors_preset = 3
 anchor_left = 1.0
@@ -86,7 +152,7 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -138.0
-offset_top = -42.0
+offset_top = -70.0
 offset_right = -8.0
 offset_bottom = -8.0
 grow_horizontal = 0
@@ -118,50 +184,17 @@ stretch = true
 handle_input_locally = false
 canvas_item_default_texture_filter = 0
 canvas_item_default_texture_repeat = 1
-size = Vector2i(110, 30)
+size = Vector2i(114, 32)
 render_target_update_mode = 4
 
-[node name="TopLeft" type="VBoxContainer" parent="."]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 50.0
-offset_bottom = 32.0
-
-[node name="OrganismPanel" type="PanelContainer" parent="TopLeft"]
-layout_mode = 2
-theme_override_styles/panel = ExtResource("2_djdge")
-
-[node name="Container" type="VBoxContainer" parent="TopLeft/OrganismPanel"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="TopLeft/OrganismPanel/Container"]
-layout_mode = 2
-text = "Network"
-
-[node name="Panel" type="PanelContainer" parent="TopLeft/OrganismPanel/Container"]
-layout_mode = 2
-theme_override_styles/panel = ExtResource("2_ut6pp")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="TopLeft/OrganismPanel/Container/Panel"]
-layout_mode = 2
-
-[node name="Stats" type="VBoxContainer" parent="TopLeft/OrganismPanel/Container/Panel/HBoxContainer"]
-custom_minimum_size = Vector2(120, 230)
-layout_mode = 2
-script = ExtResource("4_4xxwx")
-
-[node name="VSeparator" type="VSeparator" parent="TopLeft/OrganismPanel/Container/Panel/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 1
-
-[node name="Graph" type="Control" parent="TopLeft/OrganismPanel/Container/Panel/HBoxContainer"]
-custom_minimum_size = Vector2(120, 230)
-layout_mode = 2
-script = ExtResource("4_8xvcf")
-
 [node name="TimeControls" type="CenterContainer" parent="."]
-offset_right = 1152.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_right = 300.0
 offset_bottom = 32.0
+grow_horizontal = 2
 script = ExtResource("4_luopl")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TimeControls"]

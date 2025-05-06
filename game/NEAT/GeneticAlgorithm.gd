@@ -1,5 +1,5 @@
 class_name GeneticAlgorithm
-extends Node
+extends RefCounted
 
 
 """This class is responsible for generating genomes, placing them into species and
@@ -39,7 +39,6 @@ var gui
  #0 = show all, 1 = show leaders, 2 = show none. Can be changed using gui
 var curr_visibility = Params.default_visibility
 
-
 func _init(number_inputs: int,
 		   number_outputs: int,
 		   body_path: String,
@@ -51,7 +50,7 @@ func _init(number_inputs: int,
 	set of genomes and agents, and creates a GUI if use_gui is true.
 	"""
 	# set the name of the node that contains GeneticAlgorithm Object
-	set_name("ga")
+	# set_name("ga")
 	# load the specified Params file
 	Params.load_config(custom_params_name)
 	# save all specified parameters in the Params singleton
@@ -60,9 +59,9 @@ func _init(number_inputs: int,
 	Params.agent_body_path = body_path
 	Params.use_gui = use_gui
 	# add the gui node as child
-	if use_gui:
-		gui = load("res://NEAT_usability/gui/NeatGUI.gd").new()
-		add_child(gui)
+	#if use_gui:
+		#gui = load("res://NEAT_usability/gui/NeatGUI.gd").new()
+		#add_child(gui)
 	
 func create_base_genome() -> Genome:
 	"""This method creates an initial genome. For the first set of
@@ -185,7 +184,6 @@ func free_genome(genome: Genome) -> void:
 	var species: Species = curr_species[genome.species_id]
 	species.expire_member(genome)
 	curr_genomes.erase(genome)
-	
 
 func evaluate_generation() -> void:
 	"""Must get called once before making a new generation. Kills all agents, updates the
@@ -195,8 +193,6 @@ func evaluate_generation() -> void:
 	if Params.print_new_generation:
 		print_status()
 	num_new_species = 0
-	
-
 
 func find_species(new_genome: Genome) -> Species:
 	"""Tries to find a species to which the given genome is similar enough to be
@@ -216,7 +212,6 @@ func find_species(new_genome: Genome) -> Species:
 	# return the species, whether it is new or not
 	return found_species
 
-
 func make_new_species(founding_member: Genome) -> Species:
 	"""Generates a new species with a unique id, assigns the founding member as
 	representative, and adds the new species to curr_species and returns it.
@@ -227,7 +222,6 @@ func make_new_species(founding_member: Genome) -> Species:
 	curr_species[new_species.species_id] = new_species
 	num_new_species += 1
 	return new_species
-
 
 func evaluate_curr_species() -> void:
 	"""Determines which species will get to reproduce in the next generation.
@@ -276,8 +270,6 @@ func evaluate_curr_species() -> void:
 		
 	best_species = _best_species
 	curr_species = updated_species
-	
-
 
 func print_status() -> void:
 	"""Prints some basic information about the current progress of evolution.

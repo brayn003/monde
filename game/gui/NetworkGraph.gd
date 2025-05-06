@@ -1,6 +1,6 @@
 extends Control
 
-var focused_organism: Organism
+var _selected_entity: Creature
 var offset = Vector2(10, 10)
 var zoom = Vector2(100, 200)
 
@@ -13,8 +13,8 @@ func _draw() -> void:
 		#if i % int(zoom / 10) == 0:
 			#draw_line(offset + Vector2(i, 0), offset + Vector2(i, zoom), Color.DIM_GRAY)
 			#draw_line(offset + Vector2(0, i), offset + Vector2(zoom, i), Color.DIM_GRAY)
-	if focused_organism:
-		var genome = focused_organism.genome
+	if _selected_entity:
+		var genome = _selected_entity._genome
 		
 		for neuron in genome.neurons.values():
 			draw_circle(offset + (neuron.position * zoom), 5, Color.WHITE)
@@ -30,6 +30,6 @@ func _draw() -> void:
 			
 			draw_line(from_pos, to_pos, color)
 
-func focus_on_organism(organism: Organism) -> void:
-	focused_organism = organism
+func select_entity(creature: Creature) -> void:
+	_selected_entity = creature
 	
