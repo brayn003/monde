@@ -169,5 +169,5 @@ func _spawn_offspring(_actions: Array[float]) -> void:
 
 func add_genome(input_genome: Genome) -> void:
 	_genome = input_genome
-	_nn = NeuralNet.new(_genome.neurons, _genome.links)
+	_nn = NeuralNet.new(_genome._params, _genome.neurons, _genome.links)
 	_genome.update_fitness.connect(_on_genome_update_fitness)

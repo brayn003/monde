@@ -18,14 +18,14 @@ var species_id: String
 
 var _members: Array[Genome] = []
 var _pool: Array[Genome] = []
-var _leader: Genome = null
-var _representative: Genome = null
 
 var _age = 0
 var _spawn_count = 0
 var _best_ever_fitness = 0
 var _curr_mutation_rate = Constants.MutationRate.NORMAL
 
+var leader: Genome = null
+var representative: Genome = null
 var avg_fitness = 0
 var avg_fitness_adjusted = 0
 var obliterate = false
@@ -50,13 +50,13 @@ func update() -> void:
 		_pool = pool.slice(0, pool.size())
 	
 	# leader
-	_leader = _pool[0]
-	if _leader.fitness > _best_ever_fitness:
-		_best_ever_fitness = _leader.fitness
+	leader = _pool[0]
+	if leader.fitness > _best_ever_fitness:
+		_best_ever_fitness = leader.fitness
 	
 	# representative
 	if _params.update_species_rep:
-		_representative = _leader if _params.leader_is_rep else Utils.random_choice(_members)
+		representative = leader if _params.leader_is_rep else Utils.random_choice(_members)
 		
 	# age
 	var lowest_gen: int
@@ -69,7 +69,7 @@ func update() -> void:
 	_age = highest_gen - lowest_gen
 	
 	# mutation
-	var num_gens_no_improvement = highest_gen - _leader.generation
+	var num_gens_no_improvement = highest_gen - leader.generation
 	if num_gens_no_improvement > _params.allowed_gens_no_improvement:
 		obliterate = true
 	elif num_gens_no_improvement > _params.enough_gens_to_change_things:
@@ -91,9 +91,9 @@ func get_avg_fitness() -> float:
 	return (total_fitness / _members.size())
 
 func elite_spawn(g_id: int) -> Genome:
-	"""Returns a clone of the species _leader without increasing spawn count
+	"""Returns a clone of the species leader without increasing spawn count
 	"""
-	return _leader.clone(g_id)
+	return leader.clone(g_id)
 
 func mate_spawn(g_id: int) -> Genome:
 	"""Chooses to members from the pool and produces a baby via crossover. Baby

@@ -34,6 +34,7 @@ func _on_world_clock_tick(world: World) -> void:
 	
 	var curr_pikis = get_tree().get_nodes_in_group("pikis")
 	var curr_piki_count = curr_pikis.size()
+	var curr_piki_species_count = world._ga[Constants.Family.PIKI]._curr_species.size()
 	var max_piki_count = Constants.MAX_PIKIS
 	var latest_piki_gen = curr_pikis[-1].generation if curr_pikis.size() > 0 else "-"
 	
@@ -43,7 +44,7 @@ func _on_world_clock_tick(world: World) -> void:
 	current_stats_text += "\nFruits: " + str(curr_fruit_count) + " / " + str(max_fruit_count)
 	current_stats_text += "\n"
 	current_stats_text += "\n[Piki] Population: " + str(curr_piki_count) + " / " + str(max_piki_count)
-	#current_stats_text += "\n[Piki] Species: " + str(curr_piki_species_count)
+	current_stats_text += "\n[Piki] Species: " + str(curr_piki_species_count)
 	current_stats_text += "\n[Piki] Latest Gen: " + str(latest_piki_gen)
 	#current_stats_text += "\n--Aiko--"
 	#current_stats_text += "\nAiko pop: " + str(world.curr_aikos.size())

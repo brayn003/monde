@@ -8,6 +8,8 @@ A method for saving the network configuration to json format is also provided,
 making it possible to create a new standalone neural network object later on.
 """
 
+var _params: FamilyParams
+
 # the number of hidden layers in the network.
 var depth: int
 # flush count is 1 if active run type, else it is the number of hidden layers.
@@ -25,7 +27,7 @@ var activation_func: Callable
 var enabled_links: Array
 
 
-func _init(neurons: Dictionary, links: Dictionary) -> void:
+func _init(params: FamilyParams, neurons: Dictionary, links: Dictionary) -> void:
 	"""When the network gets initialized, the neuron and link data from the genome
 	class is used to build a neural network object by assigning neuron genes to
 	variables that enable accessing them in update() function.
@@ -33,6 +35,7 @@ func _init(neurons: Dictionary, links: Dictionary) -> void:
 	reading the link genes and using the connect_input() function to build the nested
 	inputs array in the Neuron class.
 	"""
+	_params = params
 	all_neurons = neurons
 	# assign neurons to arrays based on their type
 	for neuron in all_neurons.values():
@@ -40,14 +43,14 @@ func _init(neurons: Dictionary, links: Dictionary) -> void:
 		neuron.input_connections.clear()
 		# insert neurons into matching arrays based on type
 		match neuron.neuron_type:
-			Params.NEURON_TYPE.input:
+			Constants.NeuronType.INPUT:
 				inputs.append(neuron)
-			Params.NEURON_TYPE.bias:
+			Constants.NeuronType.BIAS:
 				# bias always outputs 1.0
 				neuron.output = 1.0
-			Params.NEURON_TYPE.hidden:
+			Constants.NeuronType.HIDDEN:
 				hiddens.append(neuron)
-			Params.NEURON_TYPE.output:
+			Constants.NeuronType.OUTPUT:
 				outputs.append(neuron)
 	# connect all neurons using the information stored in the link genes
 	enabled_links = []
@@ -65,9 +68,9 @@ func _init(neurons: Dictionary, links: Dictionary) -> void:
 	# if networks run on active, every neuron is updated once per update(), if they
 	# run snapshot, every n. is activ. often enough until inp. is flushed to outputs
 	depth = calculate_depth(hiddens)
-	flush_count = 1 if Params.is_runtype_active else depth
+	flush_count = 1 if _params.is_runtype_active else depth
 	# set a funcref to the activation func that will be used
-	activation_func = Callable(self, Params.curr_activation_func)
+	activation_func = Callable(self, _params.curr_activation_func)
 
 
 func update(input_values: Array[float]) -> Array[float]:
@@ -83,7 +86,7 @@ func update(input_values: Array[float]) -> Array[float]:
 		push_error("Num of inputs not matching num of input neurons"); breakpoint
 	# feed the input neurons.
 	for i in inputs.size():
-		if Params.activate_inputs:
+		if _params.activate_inputs:
 			inputs[i].output = activation_func.call(input_values[i])
 		else:
 			inputs[i].output = input_values[i]
@@ -109,8 +112,8 @@ func save_to_json(name: String) -> void:
 	var network_data = {}
 	network_data["network_name"] = name
 	# save information about the used activation func and network depth
-	network_data["activation_func"] = Params.curr_activation_func
-	network_data["runtype_active"] = Params.is_runtype_active
+	network_data["activation_func"] = _params.curr_activation_func
+	network_data["runtype_active"] = _params.is_runtype_active
 	network_data["depth"] = depth
 	# Save all neurons in sorted order
 	var sorted_neurons = all_neurons.values()

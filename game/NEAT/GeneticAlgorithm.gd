@@ -151,7 +151,7 @@ func _evaluate_species(species: Species) -> void:
 		if not _curr_best_species or species_fitness > _curr_best_species.avg_fitness:
 			_curr_best_species = species
 
-		if species.leader.fitness > _curr_best_genome.fitness:
+		if not _curr_best_genome or species.leader.fitness > _curr_best_genome.fitness:
 			if _all_time_best_genome and species.leader.fitness > _all_time_best_genome.fitness:
 				_all_time_best_genome = species.leader
 			_curr_best_genome = species.leader

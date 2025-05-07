@@ -158,6 +158,7 @@ func _build_spawner(family: Constants.Family, input_position: Vector2):
 		var spawner: Spawner = SPAWNER_SCENE.instantiate()
 		add_child(spawner)
 		spawner.add_family(family)
+		spawner.add_ga(_ga[family])
 		spawner.position = input_position
 
 func _spawn_initial_creature(
