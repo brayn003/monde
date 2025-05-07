@@ -1,9 +1,9 @@
 [gd_scene load_steps=8 format=3 uid="uid://clqvlybt45o7r"]
 
-[ext_resource type="Script" path="res://game/Planets/Star/Star.gd" id="1"]
-[ext_resource type="Shader" path="res://game/Planets/Star/StarBlobs.gdshader" id="2"]
-[ext_resource type="Shader" path="res://game/Planets/Star/StarFlares.gdshader" id="3"]
-[ext_resource type="Shader" path="res://game/Planets/Star/Star.gdshader" id="4"]
+[ext_resource type="Script" uid="uid://da8f384uy422p" path="res://game/Planets/Star/Star.gd" id="1"]
+[ext_resource type="Shader" uid="uid://bmfbtr45fgxnd" path="res://game/Planets/Star/StarBlobs.gdshader" id="2"]
+[ext_resource type="Shader" uid="uid://c61iwu8cvrhov" path="res://game/Planets/Star/StarFlares.gdshader" id="3"]
+[ext_resource type="Shader" uid="uid://wwrjn1m5hw11" path="res://game/Planets/Star/Star.gdshader" id="4"]
 
 [sub_resource type="ShaderMaterial" id="1"]
 shader = ExtResource("2")
@@ -37,7 +37,7 @@ shader = ExtResource("3")
 shader_parameter/pixels = 200.0
 shader_parameter/colors = PackedColorArray(0.466667, 0.839216, 0.756863, 1, 1, 1, 0.894118, 1)
 shader_parameter/time_speed = 0.05
-shader_parameter/time = null
+shader_parameter/time = 0.0
 shader_parameter/rotation = 0.0
 shader_parameter/should_dither = true
 shader_parameter/storm_width = 0.3

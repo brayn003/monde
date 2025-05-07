@@ -1,10 +1,10 @@
 [gd_scene load_steps=9 format=3 uid="uid://xjrxhq67hgl7"]
 
 [ext_resource type="PackedScene" uid="uid://fgxb5w7mcgo0" path="res://game/Planets/Planet.tscn" id="1"]
-[ext_resource type="Shader" path="res://game/Planets/NoAtmosphere/NoAtmosphere.gdshader" id="2"]
-[ext_resource type="Shader" path="res://game/Planets/NoAtmosphere/Craters.gdshader" id="3"]
-[ext_resource type="Script" path="res://game/Planets/LavaWorld/LavaWorld.gd" id="4"]
-[ext_resource type="Shader" path="res://game/Planets/LavaWorld/Rivers.gdshader" id="5"]
+[ext_resource type="Shader" uid="uid://c4qed2cci1wnq" path="res://game/Planets/NoAtmosphere/NoAtmosphere.gdshader" id="2"]
+[ext_resource type="Shader" uid="uid://cu36jd6hn83qu" path="res://game/Planets/NoAtmosphere/Craters.gdshader" id="3"]
+[ext_resource type="Script" uid="uid://uhv5xayjre4t" path="res://game/Planets/LavaWorld/LavaWorld.gd" id="4"]
+[ext_resource type="Shader" uid="uid://c62s5yjmi3a47" path="res://game/Planets/LavaWorld/Rivers.gdshader" id="5"]
 
 [sub_resource type="ShaderMaterial" id="1"]
 shader = ExtResource("2")

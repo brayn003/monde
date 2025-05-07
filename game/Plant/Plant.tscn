@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://byr5tg7ghupe6"]
 
-[ext_resource type="Script" path="res://game/Plant/Plant.gd" id="1_os8n4"]
-[ext_resource type="Script" path="res://game/Plant/PlantBodyRender.gd" id="2_hu75e"]
-[ext_resource type="Script" path="res://game/Plant/PlantBody.gd" id="2_juabr"]
+[ext_resource type="Script" uid="uid://cpvpl3smr4r31" path="res://game/Plant/Plant.gd" id="1_os8n4"]
+[ext_resource type="Script" uid="uid://cedjibjvh8c3b" path="res://game/Plant/PlantBodyRender.gd" id="2_hu75e"]
+[ext_resource type="Script" uid="uid://cyox767tenbic" path="res://game/Plant/PlantBody.gd" id="2_juabr"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fc2ew"]
 radius = 20.0

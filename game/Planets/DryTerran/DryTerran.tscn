@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cqwgwog1pm6s3"]
 
 [ext_resource type="PackedScene" uid="uid://fgxb5w7mcgo0" path="res://game/Planets/Planet.tscn" id="1"]
-[ext_resource type="Script" path="res://game/Planets/DryTerran/DryTerran.gd" id="2"]
+[ext_resource type="Script" uid="uid://cfhvnersfpy1v" path="res://game/Planets/DryTerran/DryTerran.gd" id="2"]
 
 [sub_resource type="Shader" id="1"]
 code = "shader_type canvas_item;

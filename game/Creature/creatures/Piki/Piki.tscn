@@ -1,8 +1,8 @@
 [gd_scene load_steps=7 format=3 uid="uid://dsn2c2cw1wi6s"]
 
-[ext_resource type="Script" path="res://game/Creature/creatures/Piki/Piki.gd" id="1_74ifi"]
-[ext_resource type="Script" path="res://game/Creature/creatures/Piki/PikiBody.gd" id="2_yhlsj"]
-[ext_resource type="Script" path="res://game/Creature/creatures/Piki/PikiBodyRender.gd" id="3_dp6nn"]
+[ext_resource type="Script" uid="uid://c37rukhapremh" path="res://game/Creature/creatures/Piki/Piki.gd" id="1_74ifi"]
+[ext_resource type="Script" uid="uid://c0arsbk2fd8u1" path="res://game/Creature/creatures/Piki/PikiBody.gd" id="2_yhlsj"]
+[ext_resource type="Script" uid="uid://colhluf3b3xgp" path="res://game/Creature/creatures/Piki/PikiBodyRender.gd" id="3_dp6nn"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_l0800"]
 radius = 2.5

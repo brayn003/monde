@@ -42,7 +42,7 @@ func check_new_split(from_neuron_id: int, to_neuron_id: int) -> Array:
 		return split_data
 	# If this split is new, create 2 new link Innovations, and one new neuron
 	else:
-		var split_neuron_id = store_neuron(Params.NEURON_TYPE.hidden)
+		var split_neuron_id = store_neuron(Constants.NeuronType.HIDDEN)
 		var link1_innov_id = store_link(from_neuron_id, split_neuron_id)
 		var link2_innov_id = store_link(split_neuron_id, to_neuron_id)
 		# store everything in a split_data array, store it, and return it

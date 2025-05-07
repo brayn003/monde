@@ -4,6 +4,7 @@ extends Node2D
 signal select_entity(creature: Creature)
 signal clock_tick(world: World)
 
+const SPAWNER_SCENE := preload("res://game/Spawner/Spawner.tscn")
 const PIKI_SCENE: Resource = preload("res://game/Creature/creatures/Piki/Piki.tscn")
 const AIKO_SCENE: Resource = preload("res://game/Creature/creatures/Aiko/Aiko.tscn")
 
@@ -12,12 +13,12 @@ var _scene_map = {
 	Constants.Family.AIKO: AIKO_SCENE,
 }
 var _ga = {
-	Constants.Family.PIKI: GeneticAlgorithm.new(9, 2, "piki"),
-	Constants.Family.AIKO: GeneticAlgorithm.new(9, 2, "aiko"),
+	Constants.Family.PIKI: GeneticAlgorithm.new(Constants.Family.PIKI, 9, 2),
+	Constants.Family.AIKO: GeneticAlgorithm.new(Constants.Family.AIKO, 9, 2),
 }
 
-var _spawning_family := Constants.Family.NONE
-var _spawning_placeholder: CreatureBodyRender
+var _build_spawner_family := Constants.Family.NONE
+var _build_spawner_placeholder: SpawnerBodyRender
 
 # time
 var curr_time: int = 0
@@ -46,19 +47,18 @@ func _ready_clock() -> void:
 	clock.start()
 
 func _ready_gui() -> void:
-	_gui.toggled_spawn.connect(_on_gui_toggled_spawn)
+	_gui.clicked_build_spawner.connect(_on_gui_toggled_spawn)
 	clock_tick.connect(_gui._on_world_clock_tick)
 	select_entity.connect(_gui._on_world_select_entity)
 
 func _input(event: InputEvent) -> void:
-	_input_spawn_click(event)
+	_input_build_spawner(event)
 	_input_reset_selected_entity(event)
 
-func _input_spawn_click(event: InputEvent) -> void:
-	if is_instance_valid(_spawning_placeholder):
-		if event is InputEventMouseButton:
-			if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-				_spawn_initial_creature(_spawning_family, get_global_mouse_position())
+func _input_build_spawner(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+			_build_spawner(_build_spawner_family, get_global_mouse_position())
 
 func _input_reset_selected_entity(event: InputEvent) -> void:
 	if event is InputEventKey and event.keycode == KEY_ESCAPE:
@@ -69,9 +69,9 @@ func _process(_delta):
 	_process_spawn_placeholder()
 
 func _process_spawn_placeholder() -> void:
-	if is_instance_valid(_spawning_placeholder):
+	if is_instance_valid(_build_spawner_placeholder):
 		var mouse_positoion = get_local_mouse_position()
-		_spawning_placeholder.position = mouse_positoion
+		_build_spawner_placeholder.position = mouse_positoion
 
 func _on_creature_death(creature: Creature) -> void:
 	var creature_ga = _ga[creature.family]
@@ -95,7 +95,7 @@ func _on_creature_spawn(parent_creature: Creature) -> void:
 		parent_creature.generation)
 	
 func _on_creature_clicked(creature: Creature) -> void:
-	if _spawning_family == Constants.Family.NONE:
+	if _build_spawner_family == Constants.Family.NONE:
 		select_entity.emit(creature)
 		#_gui.select_entity(creature)
 		_camera.select_entity(creature)
@@ -123,20 +123,18 @@ func _on_clock_timeout() -> void:
 		#aiko_ga.curr_generation += 1
 
 func _on_gui_toggled_spawn(family: Constants.Family) -> void:
-	_spawning_family = family
+	_build_spawner_family = family
 	
-	if is_instance_valid(_spawning_placeholder):
-		_spawning_placeholder.queue_free()
-		_spawning_placeholder = null
+	if is_instance_valid(_build_spawner_placeholder):
+		_build_spawner_placeholder.queue_free()
+		_build_spawner_placeholder = null
 	
-	match _spawning_family:
-		Constants.Family.PIKI:
-			_spawning_placeholder = PikiBodyRender.new()
-		Constants.Family.AIKO:
-			_spawning_placeholder = AikoBodyRender.new()
+	if family != Constants.Family.NONE:
+		_build_spawner_placeholder = SpawnerBodyRender.new()
+		_build_spawner_placeholder.add_icon(family)
 	
-	if _spawning_placeholder:
-		add_child(_spawning_placeholder)
+	if _build_spawner_placeholder:
+		add_child(_build_spawner_placeholder)
 
 func _create_creature(
 	family: Constants.Family,
@@ -154,6 +152,13 @@ func _create_creature(
 	add_child(creature)
 	creature.body.position = input_position
 	creature.body.rotation = _input_rotation
+
+func _build_spawner(family: Constants.Family, input_position: Vector2):
+	if is_instance_valid(_build_spawner_placeholder):
+		var spawner: Spawner = SPAWNER_SCENE.instantiate()
+		add_child(spawner)
+		spawner.add_family(family)
+		spawner.position = input_position
 
 func _spawn_initial_creature(
 	family: Constants.Family,

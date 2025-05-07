@@ -64,3 +64,11 @@ func sort_and_remove_duplicates(arr: Array) -> Array:
 		last_value = value
 	return new_array
 	
+
+func math_factorial(num: int) -> int:
+	if num == 0 or num == 1: 
+		return 1
+	return num * math_factorial(num - 1)
+
+func math_combination(n: int, r: int) -> int:
+	return math_factorial(n) / math_factorial(r) * math_factorial(n - r)

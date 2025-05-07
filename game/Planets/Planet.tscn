@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://fgxb5w7mcgo0"]
 
-[ext_resource type="Script" path="res://game/Planets/Planet.gd" id="4"]
+[ext_resource type="Script" uid="uid://b64o0x7g42k0i" path="res://game/Planets/Planet.gd" id="4"]
 
 [node name="Planet" type="Control"]
 custom_minimum_size = Vector2(200, 200)

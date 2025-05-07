@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://dn8he7axn0hin"]
 
-[ext_resource type="Script" path="res://game/Consumable/ConsumableBodyRender.gd" id="1_a6aod"]
-[ext_resource type="Script" path="res://game/Consumable/ConsumableBody.gd" id="1_cn60i"]
-[ext_resource type="Script" path="res://game/Consumable/Consumable.gd" id="1_dm63f"]
+[ext_resource type="Script" uid="uid://bgcmlryst6mfv" path="res://game/Consumable/ConsumableBodyRender.gd" id="1_a6aod"]
+[ext_resource type="Script" uid="uid://os0h81fl6gxu" path="res://game/Consumable/ConsumableBody.gd" id="1_cn60i"]
+[ext_resource type="Script" uid="uid://bmdo65o1jnmuk" path="res://game/Consumable/Consumable.gd" id="1_dm63f"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ht82q"]
 

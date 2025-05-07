@@ -1,11 +1,9 @@
 class_name Gui
 extends CanvasLayer
 
-signal toggled_spawn(family: Constants.Family)
+signal clicked_build_spawner(family: Constants.Family)
 
 var selected_entity: Creature = null
-
-#@onready var _world = $"../World"
 
 @onready var _current_stats = $TopRight/Stats/Container/Panel/Label
 #@onready var _prev_gen_stats = $TopRight/PrevGen/Container/Panel/Label

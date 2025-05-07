@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=3 uid="uid://ddwctcw2qky8d"]
 
-[ext_resource type="Script" path="res://game/World/World.gd" id="1_naktm"]
-[ext_resource type="Script" path="res://game/World/WorldBounds.gd" id="2_a2jxo"]
-[ext_resource type="Script" path="res://game/World/WorldTerrain.gd" id="2_n41dy"]
-[ext_resource type="Script" path="res://game/World/WorldBoundsRender.gd" id="3_o7ah8"]
+[ext_resource type="Script" uid="uid://66gupgpr8oof" path="res://game/World/World.gd" id="1_naktm"]
+[ext_resource type="Script" uid="uid://dptusgm1o72uq" path="res://game/World/WorldBounds.gd" id="2_a2jxo"]
+[ext_resource type="Script" uid="uid://ly0cm1bagcuc" path="res://game/World/WorldTerrain.gd" id="2_n41dy"]
+[ext_resource type="Script" uid="uid://o8g3cw2xy4l0" path="res://game/World/WorldBoundsRender.gd" id="3_o7ah8"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_owxwr"]
 normal = Vector2(0, 1)

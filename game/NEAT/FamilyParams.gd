@@ -1,8 +1,7 @@
-extends Node
+class_name FamilyParams
+extends RefCounted
 
-"""This singleton holds all parameters that are used by the NEAT algorithm.
-Methods for storing and loading configurations are also included.
-"""
+var family := Constants.Family.NONE
 
 # -------------------- GA SETTINGS -------------------- 
 
@@ -88,8 +87,6 @@ var gene_swap_rate = 0.25
 # with similar fitness scores. keeping it false (=based on fitness) seems to yield
 # the best results.
 var random_mating = false
-# All types of neurons
-enum NEURON_TYPE{input, bias, hidden, output}
 
 
 
@@ -168,9 +165,7 @@ var enough_gens_to_change_things = 4
 # how many generations should be tolerated without improvement, after that, kill
 # the species.
 var allowed_gens_no_improvement = 8
-# Every mutation has two probabilities associated. This enum just refers to these
-# two states.
-enum MUTATION_RATE{normal, heightened}
+
 
 # ----- fitness sharing parameters
 # Params for rewarding/punishing species based on their age
@@ -221,128 +216,3 @@ var weight_max_color = 4
 
 
 # -------------------- INNOVATION PARAMETERS -------------------- 
-
-# enum referring to the array indices of the data returned by check_new_split()
-enum SPLIT_MEMBERS{from_link, neuron_id, to_link}
-
-
-
-# ---------------------------------------------------------------
-# ------------------ SAVING AND LOADING PARAMS ------------------
-# ---------------------------------------------------------------
-
-func load_config(config_name: String) -> void:
-	"""Loads a valid file stored in user://param_configs/ that has a .cfg extension.
-	If no configs have been saved yet, the /params_configs directory is made, and
-	a config named 'Default.cfg' is saved with the properties of this class.
-	"""
-	var config = ConfigFile.new()
-	# If no param configs have been saved yet, save the settings from this file as Default
-	var dir = DirAccess.open("user://param_configs")
-	if not dir:
-		DirAccess.make_dir_recursive_absolute("user://param_configs")
-		save_config("Default")
-	# try to open the specified file, break execution if it doesn't exist
-	else:
-		var err = config.load("user://param_configs/%s.cfg" % config_name)
-		if err == OK:
-			for section in config.get_sections():
-				for property in config.get_section_keys(section):
-					set(property, config.get_value(section, property))
-		else:
-			push_error("Could not load config, error code: %d" % err); breakpoint
-
-
-func save_config(config_name: String) -> void:
-	"""Saves the properties of this instance of Params as a .cfg file under 
-	user://param_configs/.
-	"""
-	var config = ConfigFile.new()
-	for property in get_property_list():
-		# cannot use match statement because array patterns have to match completely
-		var has_property = false
-		for section_key in property_dict.keys():
-			if property_dict[section_key].has(property.name):
-				config.set_value(section_key, property.name, get(property.name))
-				has_property = true
-				break
-		if not has_property and not ignore_properties.has(property.name):
-			print("property %s is missing in the property dict" % property.name)
-	config.save("user://param_configs/%s.cfg" % config_name)
-
-
-# An array listing all the properties of this class that should be excluded from config
-var ignore_properties = [
-	"Node", "Pause", "owner", "custom_multiplayer", "Script", "__meta__",
-	"Script Variables", "editor_description", "_import_path", "pause_mode",
-	"name", "filename", "multiplayer", "process_priority", "script", "num_inputs",
-	"num_outputs", "agent_body_path", "visibility_options", "default_visibility",
-	"neuron_colors", "weight_max_color", "num_tries_find_link", "ignore_properties",
-	"property_dict"
-]
-
-# Assigns all properties used in the config to section keys
-var property_dict = {
-	"Genetic Algorithm settings" : [
-		"population_size",
-		"print_new_generation"
-	],
-	"network constraints" : [
-		"num_initial_links",
-		"max_neuron_amt",
-		"prevent_chaining",
-		"chain_threshold"
-	],
-	"GUI and highlighter" : [
-		"use_gui",
-		"is_highlighter_enabled",
-		"highlighter_offset",
-		"highlighter_radius",
-		"highlighter_color",
-		"highlighter_width"
-	],
-	"Crossover" : [
-		"prob_asex",
-		"gene_swap_rate",
-		"random_mating"
-	],
-	"Neuron mutations" : [
-		"prob_add_neuron",
-		"default_curve",
-		"prob_activation_mut",
-		"activation_shift_deviation"
-	],
-	"Link mutations" : [
-		"prob_add_link",
-		"prob_disable_link",
-		"prob_loop_link",
-		"prob_direct_link",
-		"no_feed_back",
-		"prob_weight_mut",
-		"w_range",
-		"prob_weight_replaced",
-		"weight_shift_deviation",
-	],
-	"Speciation" : [
-		"species_boundary",
-		"coeff_matched",
-		"coeff_disjoint",
-		"coeff_excess"
-	],
-	"Species behavior" : [
-		"enough_gens_to_change_things",
-		"allowed_gens_no_improvement",
-		"old_age",
-		"youth_bonus",
-		"old_penalty",
-		"update_species_rep",
-		"leader_is_rep",
-		"spawn_cutoff",
-		"selection_threshold",
-	],
-	"Neural network settings" : [
-		"is_runtype_active",
-		"curr_activation_func",
-		"activate_inputs",
-	],
-}

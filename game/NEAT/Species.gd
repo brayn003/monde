@@ -9,133 +9,91 @@ of individual members contributes to the fitness of the entire species, which in
 turn determines how many new members the species will spawn in the next generation.
 """
 
+var _params: FamilyParams = null
+
 # unique string consisting of the generation the species was founded in, and the
 # genome that founded species
 var species_id: String
 # How many generations this species has existed for
-var age = 0
-# the representative of this species, that all new genomes are compared to
-var representative: Genome
-# Leader is the fittest member. If Params.compare_to_leader, he is also the representative
-var leader: Genome
 
-# all members of the current generation
-var alive_members: Array[Genome] = []
-# The pool of members from the previous gen that will spawn offspring
-var pool: Array
-# maximum offspring this species can spawn (may spawn less)
-var expected_offspring = 0
-# number of spawns the species got during the last generation it was active
-var spawn_count = 0
-# average fitness of all alive members
+var _members: Array[Genome] = []
+var _pool: Array[Genome] = []
+var _leader: Genome = null
+var _representative: Genome = null
+
+var _age = 0
+var _spawn_count = 0
+var _best_ever_fitness = 0
+var _curr_mutation_rate = Constants.MutationRate.NORMAL
+
 var avg_fitness = 0
-# average fitness adjusted by the age modifier
-#var avg_fitness_adjusted = 0
-# best ever fitness witnessed in this species
-var best_ever_fitness = 0
-# should this species be purged?
+var avg_fitness_adjusted = 0
 var obliterate = false
-# The amount of offspring to be spawned in the next generation
-var num_to_spawn = 0
 
-# if the species doesn't improve for Params.enough_gens_to_change_things, the rates
-# of mutations change to their second (heightened) value. this changes back if the
-# species improves again.
-var curr_mutation_rate = Params.MUTATION_RATE.normal
-# if the species continues to not improve, kill species after
-# allowed_gens_no_improvement of stale generations.
-var num_gens_no_improvement = 0
-
-
-func _init(id: String) -> void:
-	"""Creates a new species
-	"""
+func _init(params: FamilyParams, id: String) -> void:
+	_params = params
 	species_id = id
-	
-func evaluate() -> void:
-	for member in alive_members:
-		member.update_fitness.emit()
 
+func add_member(genome: Genome):
+	_members.append(genome)
+	genome.species_id = species_id
 
 func update() -> void:
-	"""Checks if the species continues to survive into the next generation. If so,
-	the total fitness of the species is calculated and adjusted according to the age
-	bonus of the species. It's members are ranked according to their fitness, and
-	a certain percentage of them is placed into the pool that gets to produce offspring.
-	"""
-	# first check if the species hasn't spawned new members in the last gen or if it
-	# survived for too many generations without improving, in which case it is marked
-	# for obliteration.
-	#if alive_members.is_empty() or num_gens_no_improvement > Params.allowed_gens_no_improvement:
-	# first sort the alive members, and determine the fittest member
-	for member in alive_members:
-		member.update_fitness.emit()
+	# members
+	_members.sort_custom(func (m1, m2): return m1.fitness > m2.fitness)
 	
-	alive_members.sort_custom(sort_by_fitness)
-	leader = alive_members[0]
-	# check if current best member is fitter than previous best
-	if leader.fitness > best_ever_fitness:
-		# this means the species is improving -> normal mutation rate
-		best_ever_fitness = leader.fitness
-		num_gens_no_improvement = 0
-		curr_mutation_rate = Params.MUTATION_RATE.normal
+	# pool
+	var pool = _members.filter(func (m: Genome): return !m.is_active)
+	if pool.size() > _params.selection_threshold:
+		_pool = pool.slice(0, _params.selection_threshold)
 	else:
-		num_gens_no_improvement += 1
-		if num_gens_no_improvement > Params.enough_gens_to_change_things:
-			curr_mutation_rate = Params.MUTATION_RATE.heightened
-	# if the representative should be updated, do so now
-	if Params.update_species_rep:
-		representative = leader if Params.leader_is_rep else Utils.random_choice(alive_members)
-	# pool is a reference to the alive members of the last gen
-	# If a species reaches selection_threshold, not every member gets in the pool
-	if alive_members.size() > Params.selection_threshold:
-		pool = alive_members.slice(0, Params.selection_threshold)
-	else:
-		pool = alive_members
-	# calculate the average fitness and adjusted fitness of this species
-	avg_fitness = get_avg_fitness()
-	#var fit_modif = Params.youth_bonus if age < Params.old_age else Params.old_penalty
-	#avg_fitness_adjusted = avg_fitness * fit_modif
+		_pool = pool.slice(0, pool.size())
+	
+	# leader
+	_leader = _pool[0]
+	if _leader.fitness > _best_ever_fitness:
+		_best_ever_fitness = _leader.fitness
+	
+	# representative
+	if _params.update_species_rep:
+		_representative = _leader if _params.leader_is_rep else Utils.random_choice(_members)
 		
-
+	# age
+	var lowest_gen: int
+	var highest_gen: int
+	for member in _members:
+		if not lowest_gen or member.generation < lowest_gen:
+			lowest_gen = member.generation
+		if not highest_gen or member.generation > highest_gen:
+			highest_gen = member.generation
+	_age = highest_gen - lowest_gen
+	
+	# mutation
+	var num_gens_no_improvement = highest_gen - _leader.generation
+	if num_gens_no_improvement > _params.allowed_gens_no_improvement:
+		obliterate = true
+	elif num_gens_no_improvement > _params.enough_gens_to_change_things:
+		_curr_mutation_rate = Constants.MutationRate.HIGH
+	else:
+		_curr_mutation_rate = Constants.MutationRate.NORMAL
+	
+	# averages
+	var fit_modif = _params.youth_bonus if _age < _params.old_age else _params.old_penalty
+	avg_fitness = get_avg_fitness()
+	avg_fitness_adjusted = avg_fitness * fit_modif
 
 func get_avg_fitness() -> float:
 	"""Returns the average fitness of all members in the species
 	"""
 	var total_fitness = 0
-	for member in alive_members:
+	for member in _members:
 		total_fitness += member.fitness
-	return (total_fitness / alive_members.size())
-
-
-func add_member(new_genome) -> void:
-	"""Just appends a new genome to the alive_members and updates the new_members
-	count.
-	"""
-	alive_members.append(new_genome)
-	new_genome.species_id = species_id
-
-func expire_member(genome) -> void:
-	alive_members.erase(genome)
-
-
-func purge() -> void:
-	"""Actually just included for dramatic effect.
-	"""
-	alive_members.clear()
-
-
-func sort_by_fitness(member1: Genome, member2: Genome) -> bool:
-	"""Used for sort_custom(). Sorts members in descending order.
-	"""
-	return member1.fitness > member2.fitness
-
+	return (total_fitness / _members.size())
 
 func elite_spawn(g_id: int) -> Genome:
-	"""Returns a clone of the species leader without increasing spawn count
+	"""Returns a clone of the species _leader without increasing spawn count
 	"""
-	return leader.clone(g_id)
-
+	return _leader.clone(g_id)
 
 func mate_spawn(g_id: int) -> Genome:
 	"""Chooses to members from the pool and produces a baby via crossover. Baby
@@ -143,25 +101,25 @@ func mate_spawn(g_id: int) -> Genome:
 	"""
 	var mom: Genome; var dad: Genome; var baby: Genome
 	# if random mating, pick 2 random unique parent genomes for crossing over.
-	if Params.random_mating:
+	if _params.random_mating:
 		var found_mate = false
 		while not found_mate:
-			dad = Utils.random_choice(pool)
-			mom = Utils.random_choice(pool)
+			dad = Utils.random_choice(_pool)
+			mom = Utils.random_choice(_pool)
 			if dad != mom:
 				found_mate = true
 	# else just go through every member of the pool, possibly multiple times and
 	# breed genomes sorted by their fitness. Genomes with fitness scores next to each
 	# other are therefore picked as mates, the exception being the first and last one.
 	else:
-		var pool_index = spawn_count % (pool.size() - 1)
-		mom = pool[pool_index]
+		var pool_index = _spawn_count % (_pool.size() - 1)
+		mom = _pool[pool_index]
 		# ensure that second parent is not out of pool bounds
-		dad = pool[-1] if pool_index == 0 else pool[pool_index + 1]
+		dad = _pool[-1] if pool_index == 0 else _pool[pool_index + 1]
 	# now that the parents are determined, produce a baby and mutate it
 	baby = dad.crossover(mom, g_id)
-	baby.mutate(curr_mutation_rate)
-	spawn_count += 1
+	baby.mutate(_curr_mutation_rate)
+	_spawn_count += 1
 	return baby
 
 func asex_spawn(g_id) -> Genome:
@@ -169,11 +127,11 @@ func asex_spawn(g_id) -> Genome:
 	"""
 	var baby: Genome
 	# As long as not every pool member as been spawned, pick next one from pool
-	if spawn_count < pool.size():
-		baby = pool[spawn_count].clone(g_id)
+	if _spawn_count < _pool.size():
+		baby = _pool[_spawn_count].clone(g_id)
 	# if more spawns than pool size, start again
 	else:
-		baby = pool[spawn_count % pool.size()].clone(g_id)
-	baby.mutate(curr_mutation_rate)
-	spawn_count += 1
+		baby = _pool[_spawn_count % _pool.size()].clone(g_id)
+	baby.mutate(_curr_mutation_rate)
+	_spawn_count += 1
 	return baby

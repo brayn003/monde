@@ -1,9 +1,9 @@
 [gd_scene load_steps=8 format=3 uid="uid://chh0bjjvjt2v8"]
 
-[ext_resource type="Shader" path="res://game/Planets/LandMasses/PlanetUnder.gdshader" id="1"]
-[ext_resource type="Shader" path="res://game/Planets/LandMasses/Clouds.gdshader" id="2"]
-[ext_resource type="Shader" path="res://game/Planets/LandMasses/PlanetLandmass.gdshader" id="3"]
-[ext_resource type="Script" path="res://game/Planets/LandMasses/LandMasses.gd" id="4"]
+[ext_resource type="Shader" uid="uid://blih5gaydkhg7" path="res://game/Planets/LandMasses/PlanetUnder.gdshader" id="1"]
+[ext_resource type="Shader" uid="uid://crhelk43y5i7n" path="res://game/Planets/LandMasses/Clouds.gdshader" id="2"]
+[ext_resource type="Shader" uid="uid://v742dk16e37v" path="res://game/Planets/LandMasses/PlanetLandmass.gdshader" id="3"]
+[ext_resource type="Script" uid="uid://nuwya1brlfeh" path="res://game/Planets/LandMasses/LandMasses.gd" id="4"]
 
 [sub_resource type="ShaderMaterial" id="1"]
 shader = ExtResource("1")

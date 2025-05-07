@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://b2oxb43eipvsc"]
 
-[ext_resource type="Script" path="res://game/Creature/Creature.gd" id="1_mtnbv"]
-[ext_resource type="Script" path="res://game/Creature/CreatureBody.gd" id="2_565lh"]
-[ext_resource type="Script" path="res://game/Creature/CreatureBodyRender.gd" id="3_w8mn1"]
+[ext_resource type="Script" uid="uid://caoejyhfuud1n" path="res://game/Creature/Creature.gd" id="1_mtnbv"]
+[ext_resource type="Script" uid="uid://cmqascsx4k7pt" path="res://game/Creature/CreatureBody.gd" id="2_565lh"]
+[ext_resource type="Script" uid="uid://dtd23u6o4jino" path="res://game/Creature/CreatureBodyRender.gd" id="3_w8mn1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fytw4"]
 radius = 5.0

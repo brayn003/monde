@@ -5,6 +5,9 @@ const WORLD_BOUND_RIGHT = Vector2(4000, 1000)
 const WORLD_BOUND_BOTTOM = Vector2(2000, 2000)
 const WORLD_BOUND_LEFT = Vector2(0, 1000)
 
+const SPAWNER_BODY_SIZE = 60.0
+const SPAWNER_AREA_SIZE = 500.0
+
 const PIKI_MAX_HP = 10.0
 const PIKI_MAX_ENERGY = 100.0
 const PIKI_INITIAL_ENERGY = 20.0
@@ -46,9 +49,7 @@ const FRUIT_ENERGY = 30.0
 const MAX_FRUITS = 2000
 const MAX_PIKIS = 200
 
-enum Family {
-	NONE = -1,
-	BASE,
-	PIKI,
-	AIKO,
-}
+enum Family {NONE = -1, BASE, PIKI, AIKO}
+enum NeuronType {INPUT, BIAS, HIDDEN, OUTPUT}
+enum MutationRate {NORMAL, HIGH}
+enum SplitMembers{FROM_LINK, NEURON_ID, TO_LINK} # refer check_new_split()

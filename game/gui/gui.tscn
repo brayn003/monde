@@ -1,17 +1,17 @@
 [gd_scene load_steps=8 format=3 uid="uid://cr67naqj6ujyg"]
 
-[ext_resource type="Script" path="res://game/Gui/Gui.gd" id="1_sblbl"]
+[ext_resource type="Script" uid="uid://ismq3jb5xk6v" path="res://game/Gui/Gui.gd" id="1_sblbl"]
 [ext_resource type="StyleBox" uid="uid://cxbnp2v3ef4ph" path="res://game/Gui/OuterPanel.tres" id="2_djdge"]
-[ext_resource type="Script" path="res://game/Gui/SpawnToolbar.gd" id="2_qixae"]
+[ext_resource type="Script" uid="uid://dg2x07tub20xf" path="res://game/Gui/SpawnToolbar.gd" id="2_qixae"]
 [ext_resource type="StyleBox" uid="uid://dusw1emb40eor" path="res://game/Gui/InnerPanel.tres" id="2_ut6pp"]
-[ext_resource type="Script" path="res://game/Gui/OrganismStat.gd" id="4_4xxwx"]
-[ext_resource type="Script" path="res://game/Gui/NetworkGraph.gd" id="4_8xvcf"]
-[ext_resource type="Script" path="res://game/Gui/TimeControls.gd" id="4_luopl"]
+[ext_resource type="Script" uid="uid://cnt5dnujqlqvg" path="res://game/Gui/OrganismStat.gd" id="4_4xxwx"]
+[ext_resource type="Script" uid="uid://dqoaawxas0cvh" path="res://game/Gui/NetworkGraph.gd" id="4_8xvcf"]
+[ext_resource type="Script" uid="uid://84xtv74pin2g" path="res://game/Gui/TimeControls.gd" id="4_luopl"]
 
 [node name="Gui" type="CanvasLayer"]
 script = ExtResource("1_sblbl")
 
-[node name="SpawnToolbar" type="Control" parent="."]
+[node name="BuildToolbar" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 8.0
@@ -20,18 +20,16 @@ offset_right = 33.0
 offset_bottom = 8.0
 script = ExtResource("2_qixae")
 
-[node name="C" type="VBoxContainer" parent="SpawnToolbar"]
+[node name="C" type="VBoxContainer" parent="BuildToolbar"]
 offset_right = 25.0
 offset_bottom = 44.0
 
-[node name="PikiButton" type="Button" parent="SpawnToolbar/C"]
+[node name="PikiButton" type="Button" parent="BuildToolbar/C"]
 layout_mode = 2
-toggle_mode = true
 text = "Piki"
 
-[node name="AikoButton" type="Button" parent="SpawnToolbar/C"]
+[node name="AikoButton" type="Button" parent="BuildToolbar/C"]
 layout_mode = 2
-toggle_mode = true
 text = "Aiko"
 
 [node name="TopRight" type="VBoxContainer" parent="."]

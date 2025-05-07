@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://ddwctcw2qky8d" path="res://game/World/World.tscn" id="1_1ietr"]
 [ext_resource type="PackedScene" uid="uid://cr67naqj6ujyg" path="res://game/Gui/Gui.tscn" id="1_jhd47"]
-[ext_resource type="Script" path="res://game/World/Camera.gd" id="2_s6ner"]
+[ext_resource type="Script" uid="uid://cjl4s4n8nvgl7" path="res://game/World/Camera.gd" id="2_s6ner"]
 
 [node name="Game" type="Node"]
 

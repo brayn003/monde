@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://nn5fi105o1xv"]
 
 [ext_resource type="PackedScene" uid="uid://fgxb5w7mcgo0" path="res://game/Planets/Planet.tscn" id="1"]
-[ext_resource type="Script" path="res://game/Planets/BlackHole/BlackHole.gd" id="2"]
-[ext_resource type="Shader" path="res://game/Planets/BlackHole/BlackHoleRing.gdshader" id="3"]
-[ext_resource type="Shader" path="res://game/Planets/BlackHole/BlackHole.gdshader" id="4"]
+[ext_resource type="Script" uid="uid://sxigx7qamguk" path="res://game/Planets/BlackHole/BlackHole.gd" id="2"]
+[ext_resource type="Shader" uid="uid://vfgwnp4gio3" path="res://game/Planets/BlackHole/BlackHoleRing.gdshader" id="3"]
+[ext_resource type="Shader" uid="uid://dr5g71l3vcqtk" path="res://game/Planets/BlackHole/BlackHole.gdshader" id="4"]
 
 [sub_resource type="ShaderMaterial" id="3"]
 shader = ExtResource("4")
