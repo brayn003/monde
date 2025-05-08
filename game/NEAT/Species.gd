@@ -9,7 +9,7 @@ of individual members contributes to the fitness of the entire species, which in
 turn determines how many new members the species will spawn in the next generation.
 """
 
-var _params: FamilyParams = null
+var _params: CreatureParams = null
 
 # unique string consisting of the generation the species was founded in, and the
 # genome that founded species
@@ -17,7 +17,7 @@ var species_id: String
 # How many generations this species has existed for
 
 var _members: Array[Genome] = []
-var _pool: Array[Genome] = []
+var pool: Array[Genome] = []
 
 var _age = 0
 var _spawn_count = 0
@@ -30,7 +30,7 @@ var avg_fitness = 0
 var avg_fitness_adjusted = 0
 var obliterate = false
 
-func _init(params: FamilyParams, id: String) -> void:
+func _init(params: CreatureParams, id: String) -> void:
 	_params = params
 	species_id = id
 
@@ -43,14 +43,14 @@ func update() -> void:
 	_members.sort_custom(func (m1, m2): return m1.fitness > m2.fitness)
 	
 	# pool
-	var pool = _members.filter(func (m: Genome): return !m.is_active)
-	if pool.size() > _params.selection_threshold:
-		_pool = pool.slice(0, _params.selection_threshold)
+	var _pool = _members.filter(func (m: Genome): return !m.is_active)
+	if _pool.size() > _params.selection_threshold:
+		pool = _pool.slice(0, _params.selection_threshold)
 	else:
-		_pool = pool.slice(0, pool.size())
+		pool = _pool.slice(0, _pool.size())
 	
 	# leader
-	leader = _pool[0]
+	leader = pool[0]
 	if leader.fitness > _best_ever_fitness:
 		_best_ever_fitness = leader.fitness
 	
@@ -104,21 +104,22 @@ func mate_spawn(g_id: int) -> Genome:
 	if _params.random_mating:
 		var found_mate = false
 		while not found_mate:
-			dad = Utils.random_choice(_pool)
-			mom = Utils.random_choice(_pool)
+			dad = Utils.random_choice(pool)
+			mom = Utils.random_choice(pool)
 			if dad != mom:
 				found_mate = true
 	# else just go through every member of the pool, possibly multiple times and
 	# breed genomes sorted by their fitness. Genomes with fitness scores next to each
 	# other are therefore picked as mates, the exception being the first and last one.
 	else:
-		var pool_index = _spawn_count % (_pool.size() - 1)
-		mom = _pool[pool_index]
+		var pool_index = _spawn_count % (pool.size() - 1)
+		mom = pool[pool_index]
 		# ensure that second parent is not out of pool bounds
-		dad = _pool[-1] if pool_index == 0 else _pool[pool_index + 1]
+		dad = pool[-1] if pool_index == 0 else pool[pool_index + 1]
 	# now that the parents are determined, produce a baby and mutate it
 	baby = dad.crossover(mom, g_id)
 	baby.mutate(_curr_mutation_rate)
+	baby.generation = max(dad.generation, mom.generation) + 1
 	_spawn_count += 1
 	return baby
 
@@ -127,11 +128,12 @@ func asex_spawn(g_id) -> Genome:
 	"""
 	var baby: Genome
 	# As long as not every pool member as been spawned, pick next one from pool
-	if _spawn_count < _pool.size():
-		baby = _pool[_spawn_count].clone(g_id)
+	if _spawn_count < pool.size():
+		baby = pool[_spawn_count].clone(g_id)
 	# if more spawns than pool size, start again
 	else:
-		baby = _pool[_spawn_count % _pool.size()].clone(g_id)
+		baby = pool[_spawn_count % pool.size()].clone(g_id)
 	baby.mutate(_curr_mutation_rate)
+	baby.generation = baby.generation + 1
 	_spawn_count += 1
 	return baby

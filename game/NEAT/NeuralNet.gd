@@ -8,7 +8,7 @@ A method for saving the network configuration to json format is also provided,
 making it possible to create a new standalone neural network object later on.
 """
 
-var _params: FamilyParams
+var _params: CreatureParams
 
 # the number of hidden layers in the network.
 var depth: int
@@ -27,7 +27,7 @@ var activation_func: Callable
 var enabled_links: Array
 
 
-func _init(params: FamilyParams, neurons: Dictionary, links: Dictionary) -> void:
+func _init(params: CreatureParams, neurons: Dictionary, links: Dictionary) -> void:
 	"""When the network gets initialized, the neuron and link data from the genome
 	class is used to build a neural network object by assigning neuron genes to
 	variables that enable accessing them in update() function.

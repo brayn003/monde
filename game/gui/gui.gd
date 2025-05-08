@@ -34,9 +34,13 @@ func _on_world_clock_tick(world: World) -> void:
 	
 	var curr_pikis = get_tree().get_nodes_in_group("pikis")
 	var curr_piki_count = curr_pikis.size()
-	var curr_piki_species_count = world._ga[Constants.Family.PIKI]._curr_species.size()
+	var piki_ga = world._ga[Constants.Family.PIKI]
+	var curr_piki_species_count = piki_ga._curr_species.size()
 	var max_piki_count = Constants.MAX_PIKIS
-	var latest_piki_gen = curr_pikis[-1].generation if curr_pikis.size() > 0 else "-"
+	var curr_best_piki_fitness = snapped(piki_ga._curr_best_genome.fitness, 0.01) if piki_ga._curr_best_genome else "-"
+	var curr_piki_avg_fitness = snapped(piki_ga._avg_population_fitness, 0.01)
+	var latest_piki_gen = piki_ga._curr_genomes[-1].generation if piki_ga._curr_genomes.size() > 0 else "-"
+	var total_piki_spawns = piki_ga._curr_genome_id
 	
 	var current_stats_text = ""
 	current_stats_text += "Time: " + str(world.curr_time) + "s"
@@ -45,7 +49,10 @@ func _on_world_clock_tick(world: World) -> void:
 	current_stats_text += "\n"
 	current_stats_text += "\n[Piki] Population: " + str(curr_piki_count) + " / " + str(max_piki_count)
 	current_stats_text += "\n[Piki] Species: " + str(curr_piki_species_count)
+	current_stats_text += "\n[Piki] Avg Fitness: " + str(curr_piki_avg_fitness)
+	current_stats_text += "\n[Piki] Best Fitness: " + str(curr_best_piki_fitness)
 	current_stats_text += "\n[Piki] Latest Gen: " + str(latest_piki_gen)
+	current_stats_text += "\n[Piki] Total Spawns: " + str(total_piki_spawns)
 	#current_stats_text += "\n--Aiko--"
 	#current_stats_text += "\nAiko pop: " + str(world.curr_aikos.size())
 	#current_stats_text += "\nAiko species: " + str(world.aiko_ga.curr_species.values().size())

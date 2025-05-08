@@ -117,10 +117,6 @@ func _on_clock_timeout() -> void:
 		var actions = _nn.update(senses)
 		_act(actions)
 
-func _on_genome_update_fitness() -> void:
-	var _fitness = _get_fitness()
-	_genome.fitness = _fitness
-
 func _act(actions: Array[float]) -> void:
 	body.curr_actions = actions
 	_spawn_offspring(actions)
@@ -136,13 +132,14 @@ func _get_fitness() -> float:
 	var _fitness = 0.0
 	_fitness += pow(_offspring_count, 3) * 100
 	_fitness += pow(_food_count, 2) * 100
-	_fitness += _age
+	_fitness += _age - _max_hp - _initial_energy
 	return _fitness
 
 func _die() -> void:
 	_is_dead = true
 	_died_on = Time.get_unix_time_from_system()
 	_clock.stop()
+	_genome.fitness = _get_fitness()
 	death.emit(self)
 
 func _deduct_hp(damage: float) -> void:
@@ -170,4 +167,3 @@ func _spawn_offspring(_actions: Array[float]) -> void:
 func add_genome(input_genome: Genome) -> void:
 	_genome = input_genome
 	_nn = NeuralNet.new(_genome._params, _genome.neurons, _genome.links)
-	_genome.update_fitness.connect(_on_genome_update_fitness)

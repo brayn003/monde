@@ -1,7 +1,7 @@
 class_name GeneticAlgorithm
 extends RefCounted
 
-var params = FamilyParams.new()
+var params = CreatureParams.new()
 
 var _curr_genome_id = 0
 
@@ -15,8 +15,6 @@ var _all_time_best_genome: Genome
 
 var _curr_species: Array[Species] = []
 var _curr_genomes: Array[Genome] = []
-
-var _curr_generation = 1
 
 func _init(
 family: Constants.Family, 
@@ -58,8 +56,7 @@ func _create_base_genome() -> Genome:
 	var output_pos = Vector2(1, initial_output_y)
 	for i in params.num_outputs:
 		var new_pos = output_pos
-		initial_neuron_id = Innovations.store_neuron(
-			Constants.NeuronType.OUTPUT)
+		initial_neuron_id = Innovations.store_neuron(Constants.NeuronType.OUTPUT)
 		var new_neuron = Neuron.new(
 			initial_neuron_id,
 			Constants.NeuronType.OUTPUT,
@@ -116,7 +113,7 @@ func _create_upgraded_genome() -> Genome:
 		baby_genome = species.asex_spawn(_curr_genome_id)
 	else:
 		baby_genome = species.mate_spawn(_curr_genome_id)
-		
+
 	var baby_species = species
 	if baby_genome.get_compatibility_score(species.representative) > params.species_boundary:
 		var found_species = _find_species(baby_genome)
@@ -156,20 +153,24 @@ func _evaluate_species(species: Species) -> void:
 				_all_time_best_genome = species.leader
 			_curr_best_genome = species.leader
 
-	
-
-	
-	
 	# if _total_adjusted_species_avg_fitness == 0:
 	# 	push_error("mass extinction"); breakpoint
 
 func _find_species(new_genome: Genome) -> Species:
+	# # minimum compatibility score for two genomes to be considered in the same species
+	# var species_boundary = 1.3
+	# # coefficients for tweaking the compatibility score
+	# var coeff_matched = 0.6
+	# var coeff_disjoint = 1.2
+	# var coeff_excess = 1.4
+
 	var found_species: Species
 
 	var comp_score = params.species_boundary
 	for species in _curr_species:
-		if new_genome.get_compatibility_score(species.representative) < comp_score:
-			comp_score = new_genome.get_compatibility_score(species.representative)
+		var _temp_comp_score = new_genome.get_compatibility_score(species.representative)
+		if _temp_comp_score < comp_score:
+			comp_score = _temp_comp_score
 			found_species = species
 
 	if typeof(found_species) == TYPE_NIL:
@@ -178,7 +179,7 @@ func _find_species(new_genome: Genome) -> Species:
 	return found_species
 
 func _make_new_species(founding_member: Genome) -> Species:
-	var new_species_id = str(_curr_generation) + "_" + str(founding_member.id)
+	var new_species_id = str(founding_member.generation) + "_" + str(founding_member.id)
 	var new_species = Species.new(params, new_species_id)
 	new_species.representative = founding_member
 	_curr_species.append(new_species)
@@ -195,7 +196,8 @@ func acquire_genome() -> Genome:
 		return _create_upgraded_genome()
 
 func release_genome(genome: Genome) -> void:
-	var species = _find_species(genome)
+	var index = _curr_species.find(func (s: Species): return s.species_id == genome.species_id)
+	var species = _curr_species[index]
 	_evaluate_species(species)
 	_curr_genomes.erase(genome)
 

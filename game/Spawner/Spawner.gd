@@ -4,6 +4,7 @@ extends Node2D
 
 signal spawned(creature: Creature)
 signal despawned(creature: Creature)
+signal clicked(creature: Creature)
 
 const PIKI_SCENE: Resource = preload("res://game/Creature/creatures/Piki/Piki.tscn")
 const AIKO_SCENE: Resource = preload("res://game/Creature/creatures/Aiko/Aiko.tscn")

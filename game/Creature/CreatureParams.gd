@@ -1,81 +1,28 @@
-class_name FamilyParams
+class_name CreatureParams
 extends RefCounted
 
+#region Family
+
+# -------------------------- FAMILY --------------------------
+
+# The family of the creature
 var family := Constants.Family.NONE
 
-# -------------------- GA SETTINGS -------------------- 
+#endregion
 
-# ----- init method
+#region GeneticAlgorithm
+
+# -------------------- GENETIC ALGORITHM ---------------------
+
 # numbers of inputs and outputs that every neural net will have
 var num_inputs: int
 var num_outputs: int
-# A path to the agent_body - the scene that represents the player, providing the
-# sense(), act() and get_fitness() functions. This parameter is set by the user
-# when a new GeneticAlgorithm node gets instanced.
-var agent_body_path: String
 
-# ----- change visibility of agent bodies
-# If rendering costs too much performance, or clutter is to be avoided, agent.body
-# nodes can be hidden using ga.update_visibility()
-var visibility_options = ["Show all", "Show Leaders", "Show none"]
-# the default visibility is an index to the visibility options. 0 = show all
-# this setting can be changed during runtime via a species list popup
-var default_visibility = 0
+#endregion
 
-# ----- new_generation method
-# Number of genomes agents existing at the same time (= one generation)
-var population_size = 200
-# turn on/off printing info about past generation, when making a new generation
-var print_new_generation = true
+#region Crossover
 
-
-
-# -------------------- NETWORK CONSTRAINTS -------------------- 
-
-# ----- Generating a new network
-# Because starting minimally is a very important factor in NEAT, this parameter
-# determines how many input links get a connection to an output link, when creating
-# the first set of genomes. My personal experience thus far has shown that this
-# is one of the most crucial parameters for good performance. It is important to
-# keep this number low, but definitely not too low. 40%-50% of the num of inputs
-# is a good target to start with. It should also approach the number of inputs that
-# are assumed to be important.
-var num_initial_links = 2
-# maximum amount of neurons, for performance reasons. can be set arbitrarily
-var max_neuron_amt = 10
-
-# ----- Chaining
-# if prevent_chaining is true, only split links that connect to neurons having
-# x values of either 0 or 1. This means that networks do not exceed a depth
-# of one hidden layer until their amount of neurons exceeds this threshold.
-var prevent_chaining = true
-var chain_threshold = 3
-
-
-
-# -------------------- GUI AND HIGHLIGHTER -------------------- 
-
-# ----- general
-# If set to true, ga will create a child node that will spawn all gui elements,
-# and a highlighter will be created for every agent
-var use_gui: bool
-
-# ----- highlighter parameters
-# enable the highlighter. Highlighter objects are still created if disabled, however
-# their toggle is disabled, and they will never be drawn
-var is_highlighter_enabled = true
-# if the highlighter should be slightly offset, change this here
-var highlighter_offset = Vector2(0, 0)
-# the radius of the highlighter circle
-var highlighter_radius = 100
-# the color of the highlighter circle
-var highlighter_color = Color.GREEN
-# the thickness / width of the highlighter circle
-var highlighter_width = 3
-
-
-
-# -------------------- Crossover --------------------
+# ------------------------ CROSSOVER -------------------------
 
 # ----- mating
 # Probability of skipping crossover generating new genomes
@@ -88,9 +35,12 @@ var gene_swap_rate = 0.25
 # the best results.
 var random_mating = false
 
+#endregion
 
+#region Mutations
 
-# -------------------- NEURON MUTATIONS --------------------
+# ------------------------- NEURONS --------------------------
+# ------------------------ CROSSOVER -------------------------
 
 # ----- Adding neurons
 # probabilities of adding a neuron in mutation func. There are two values for mutations,
@@ -110,9 +60,7 @@ var prob_activation_mut = [0.05, 0.05]
 # activation gets increased/decreased by normal distribution. This is it's deviation.
 var activation_shift_deviation = 0.3
 
-
-
-# -------------------- LINK MUTATIONS --------------------
+# --------------------------- LINKS --------------------------
 
 # ----- adding links
 # probabilities of adding a link between random neurons in mutation func
@@ -142,20 +90,21 @@ var prob_weight_replaced = [0.06, 0.15]
 var weight_shift_deviation = 0.4
 
 
+#endregion
 
-# -------------------- SPECIATION --------------------
+#region Species
+
+# ------------------------ SPECIATION ------------------------
 
 # ----- speciation and compatibility parameters
 # minimum compatibility score for two genomes to be considered in the same species
-var species_boundary = 1.3
+var species_boundary = 0.9
 # coefficients for tweaking the compatibility score
-var coeff_matched = 0.6
-var coeff_disjoint = 1.2
-var coeff_excess = 1.4
+var coeff_matched = 0.4
+var coeff_disjoint = 0.5
+var coeff_excess = 0.5
 
-
-
-# -------------------- SPECIES BEHAVIOR --------------------
+# --------------------- SPECIES BEHAVIOR ---------------------
 
 # ----- species performance tracking
 # if species start to become stale and don't improve for enough_gens_to_change_things 
@@ -187,9 +136,33 @@ var spawn_cutoff = 0.7
 # probably best to set this really high
 var selection_threshold = 30
 
+#endregion
+
+#region NeuralNet
+
+# ------------------------ NEURAL NET ------------------------
+
+# ----- Generating a new network
+# Because starting minimally is a very important factor in NEAT, this parameter
+# determines how many input links get a connection to an output link, when creating
+# the first set of genomes. My personal experience thus far has shown that this
+# is one of the most crucial parameters for good performance. It is important to
+# keep this number low, but definitely not too low. 40%-50% of the num of inputs
+# is a good target to start with. It should also approach the number of inputs that
+# are assumed to be important.
+var num_initial_links = 4
+# maximum amount of neurons, for performance reasons. can be set arbitrarily
+var max_neuron_amt = 100
+
+# ----- Chaining
+# if prevent_chaining is true, only split links that connect to neurons having
+# x values of either 0 or 1. This means that networks do not exceed a depth
+# of one hidden layer until their amount of neurons exceeds this threshold.
+var prevent_chaining = true
+var chain_threshold = 3
 
 
-# -------------------- NEURAL_NET PARAMETERS -------------------- 
+# ------------------ NEURAL_NET PARAMETERS ------------------- 
 
 # ----- Network updates
 # Should the network ensure that all inputs have been fully flushed through
@@ -214,5 +187,5 @@ var neuron_colors = [Color.TURQUOISE, Color.TEAL, Color.SEASHELL, Color.TOMATO]
 var weight_max_color = 4
 
 
+#endregion
 
-# -------------------- INNOVATION PARAMETERS -------------------- 

@@ -6,9 +6,7 @@ It provides the functionality to mutate itself, make a copy of itself and all it
 neurons and links, and it has a method to be combined with another genome.
 """
 
-signal update_fitness
-
-var _params: FamilyParams = null
+var _params: CreatureParams = null
 
 # the name of the genome, and the name of the species it belongs to
 var id: int
@@ -27,7 +25,7 @@ var is_leader_clone = false
 var is_active := false
 
 func _init(
-	params: FamilyParams,
+	params: CreatureParams,
 	genome_id: int, 
 	initial_neurons: Dictionary, 
 	initial_links: Dictionary,
@@ -241,9 +239,11 @@ func clone(g_id: int) -> Genome:
 		clone_links[innovation_id] = links[innovation_id].copy()
 	# return a new instance of Genome, differing only in the genome id
 	var _clone = get_script().new(
+		_params,
 		g_id,
 		clone_neurons,
-		clone_links)
+		clone_links,
+		generation)
 	# copy the species id from the parent
 	_clone.species_id = species_id
 	# mark the new genome as a clone
@@ -292,9 +292,12 @@ func crossover(mate: Genome, g_id: int) -> Genome:
 			# finally add the link
 			baby_links[link_id] = new_link
 	# make a new baby by calling the constructor of this class using get_script()
-	var baby = get_script().new(g_id,
-								baby_neurons,
-								baby_links)
+	var baby = get_script().new(
+		_params,
+		g_id,
+		baby_neurons,
+		baby_links,
+		generation)
 	# copy the species id from the parents
 	baby.species_id = species_id
 	return baby
@@ -304,6 +307,11 @@ func get_compatibility_score(other_genome: Genome) -> float:
 	formula proposed in the original NEAT Paper. See distance variable to see
 	how the formula works. It's parameters can be adjusted.
 	"""
+
+	# # coefficients for tweaking the compatibility score
+	# var coeff_matched = 0.6
+	# var coeff_disjoint = 1.2
+	# var coeff_excess = 1.4
 	# numbers needed for compatibility score formula
 	var num_matched = 0
 	var num_disjoint = 0
@@ -333,7 +341,7 @@ func get_compatibility_score(other_genome: Genome) -> float:
 	var innovation_count = 0
 	for innovation in all_Innovations:
 		# match: both genomes have invented this link, calculate difference in weights
-		if self.links.has(innovation) and other_genome.links.has(innovation):
+		if links.has(innovation) and other_genome.links.has(innovation):
 			var wd = abs(links[innovation].weight - other_genome.links[innovation].weight)
 			num_matched += 1
 			weight_difference += wd
@@ -344,7 +352,7 @@ func get_compatibility_score(other_genome: Genome) -> float:
 			break
 		# disjoint: if we are sure, that both genomes still have Innovations,
 		# (=not excess), and just one of them has the innov (xor check) -> disjoint
-		elif self.links.has(innovation) != other_genome.links.has(innovation):
+		elif links.has(innovation) != other_genome.links.has(innovation):
 			num_disjoint += 1
 		# increase the number of Innovations that have been examined
 		innovation_count += 1
