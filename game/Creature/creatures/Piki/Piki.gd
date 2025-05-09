@@ -6,7 +6,6 @@ func _init() -> void:
 	_initial_energy = Constants.PIKI_INITIAL_ENERGY
 	_max_energy = Constants.PIKI_MAX_ENERGY
 	_clock_speed = Constants.PIKI_CLOCK_SPEED
-	_max_age = Constants.PIKI_MAX_AGE
 	family = Constants.Family.PIKI
 
 func _ready() -> void:

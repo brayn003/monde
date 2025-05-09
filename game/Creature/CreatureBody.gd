@@ -12,8 +12,8 @@ var _torque = 200.0
 var _vision_range = 1000.0
 var _vision_angle = (TAU) / 3  # 180 deg
 var _ray_casts: Array[RayCast2D] = []
-var _no_of_ray_casts_per_zone = 6
-var _no_of_vision_zones = 3
+var _no_of_ray_casts_per_zone = 18
+var _no_of_vision_zones = 1
 var _no_of_ray_casts = _no_of_ray_casts_per_zone * _no_of_vision_zones
 
 var is_moving = false
@@ -76,8 +76,8 @@ func _action_turn(state: PhysicsDirectBodyState2D) -> void:
 func sense_physical_state() -> Array[float]:
 	var senses: Array[float] = []
 	senses.append(remap(linear_velocity.length(), 0, _thrust.length(), 0, 1))
-	senses.append(remap(linear_velocity.angle(), -TAU, TAU, -1, 1))
-	senses.append(remap(rotation, -TAU, TAU, -1, 1))
+	senses.append(remap(linear_velocity.angle(), -PI, PI, -1, 1))
+	senses.append(remap(rotation, -PI, PI, -1, 1))
 	return senses
 
 func _sense_items_in_sight() -> Array[float]:

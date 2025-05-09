@@ -39,7 +39,6 @@ var _born_on
 var _died_on
 var _is_dead = false
 var _is_born = false
-var _max_age = 60.0
 var _age = 0.0
 
 # public

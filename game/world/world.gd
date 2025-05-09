@@ -7,8 +7,8 @@ signal clock_tick(world: World)
 const SPAWNER_SCENE := preload("res://game/Spawner/Spawner.tscn")
 
 var _ga = {
-	Constants.Family.PIKI: GeneticAlgorithm.new(Constants.Family.PIKI, 14, 2),
-	Constants.Family.AIKO: GeneticAlgorithm.new(Constants.Family.AIKO, 14, 2),
+	Constants.Family.PIKI: GeneticAlgorithm.new(Constants.Family.PIKI, 8, 2),
+	Constants.Family.AIKO: GeneticAlgorithm.new(Constants.Family.AIKO, 8, 2),
 }
 
 var _build_spawner_family := Constants.Family.NONE
