@@ -10,3 +10,6 @@ var radius = _size / 2.0
 
 func _ready() -> void:
 	collision.shape.radius = radius
+	collision_layer = Constants.PLANT_COLLISION_LAYER
+	set_collision_layer_value(1, false)
+	set_collision_layer_value(Constants.PLANT_COLLISION_LAYER, true)

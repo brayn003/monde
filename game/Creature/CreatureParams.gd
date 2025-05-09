@@ -10,7 +10,7 @@ var family := Constants.Family.NONE
 
 #endregion
 
-#region GeneticAlgorithm
+#region Spawner
 
 # -------------------- GENETIC ALGORITHM ---------------------
 
@@ -18,6 +18,8 @@ var family := Constants.Family.NONE
 var num_inputs: int
 var num_outputs: int
 
+# how many base genomes to start with
+var num_base_genomes: int = 1000
 #endregion
 
 #region Crossover
@@ -33,7 +35,7 @@ var gene_swap_rate = 0.25
 # when crossing over 2 individuals within the pool, pick random parents, or parents
 # with similar fitness scores. keeping it false (=based on fitness) seems to yield
 # the best results.
-var random_mating = false
+var random_mating = true
 
 #endregion
 
@@ -98,11 +100,11 @@ var weight_shift_deviation = 0.4
 
 # ----- speciation and compatibility parameters
 # minimum compatibility score for two genomes to be considered in the same species
-var species_boundary = 0.9
+var species_boundary = 2.8
 # coefficients for tweaking the compatibility score
-var coeff_matched = 0.4
-var coeff_disjoint = 0.5
-var coeff_excess = 0.5
+var coeff_matched = 0.6
+var coeff_disjoint = 1.2
+var coeff_excess = 1.4
 
 # --------------------- SPECIES BEHAVIOR ---------------------
 

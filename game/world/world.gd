@@ -5,38 +5,29 @@ signal select_entity(creature: Creature)
 signal clock_tick(world: World)
 
 const SPAWNER_SCENE := preload("res://game/Spawner/Spawner.tscn")
-const PIKI_SCENE: Resource = preload("res://game/Creature/creatures/Piki/Piki.tscn")
-const AIKO_SCENE: Resource = preload("res://game/Creature/creatures/Aiko/Aiko.tscn")
 
-var _scene_map = {
-	Constants.Family.PIKI: PIKI_SCENE,
-	Constants.Family.AIKO: AIKO_SCENE,
-}
 var _ga = {
-	Constants.Family.PIKI: GeneticAlgorithm.new(Constants.Family.PIKI, 9, 2),
-	Constants.Family.AIKO: GeneticAlgorithm.new(Constants.Family.AIKO, 9, 2),
+	Constants.Family.PIKI: GeneticAlgorithm.new(Constants.Family.PIKI, 14, 2),
+	Constants.Family.AIKO: GeneticAlgorithm.new(Constants.Family.AIKO, 14, 2),
 }
 
 var _build_spawner_family := Constants.Family.NONE
 var _build_spawner_placeholder: SpawnerBodyRender
 
-# time
+var _selected_entity: Creature = null
+
 var curr_time: int = 0
-#var _time_since_last_gen: int = 0
-#var _generation_step: int = 60
 
 @onready var _gui: Gui = $"../Gui"
 @onready var _camera: Camera = $"../Camera"
 @onready var _terrain: Terrain = $Terrain
+@onready var _selector: WorldSelector = $Selector
 
 func _ready() -> void:
-	#_create_planet()
-	#add_child(piki_ga)
-	#add_child(aiko_ga)
-	#_spawn_initial_pikis()
-	#_spawn_initial_aikos()
 	_ready_clock()
+	_ready_camera()
 	_ready_gui()
+	_ready_selector()
 
 func _ready_clock() -> void:
 	var clock: Timer
@@ -51,76 +42,41 @@ func _ready_gui() -> void:
 	clock_tick.connect(_gui._on_world_clock_tick)
 	select_entity.connect(_gui._on_world_select_entity)
 
+func _ready_selector() -> void:
+	_selector.clicked.connect(_on_selector_clicked)
+
+func _ready_camera() -> void:
+	select_entity.connect(_camera._on_world_select_entity)
+
 func _input(event: InputEvent) -> void:
 	_input_build_spawner(event)
-	_input_reset_selected_entity(event)
 
 func _input_build_spawner(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 			_build_spawner(_build_spawner_family, get_global_mouse_position())
 
-func _input_reset_selected_entity(event: InputEvent) -> void:
-	if event is InputEventKey and event.keycode == KEY_ESCAPE:
-		select_entity.emit(null)
-		_camera.select_entity(null)
-
-func _process(_delta):
+func _process(_delta) -> void:
 	_process_spawn_placeholder()
+	_process_selector()
 
 func _process_spawn_placeholder() -> void:
 	if is_instance_valid(_build_spawner_placeholder):
-		var mouse_positoion = get_local_mouse_position()
-		_build_spawner_placeholder.position = mouse_positoion
+		var mouse_position = get_local_mouse_position()
+		_build_spawner_placeholder.position = mouse_position
 
-func _on_creature_death(creature: Creature) -> void:
-	var creature_ga = _ga[creature.family]
-	creature_ga.free_genome(creature._genome)
-	var curr_creatures = get_tree().get_nodes_in_group("creatures")
-	curr_creatures.erase(creature)
-	creature.queue_free()
-	if _gui.selected_entity == creature:
-		select_entity.emit(curr_creatures[-1] if curr_creatures.size() > 0 else null)
-	if _camera.selected_entity == creature:
-		_camera.select_entity(curr_creatures[-1] if curr_creatures.size() > 0 else null)
+func _process_selector() -> void:
+	_selector.position = get_global_mouse_position()
 
-func _on_creature_spawn(parent_creature: Creature) -> void:
-	var creature_ga = _ga[parent_creature.family]
-	var genome = creature_ga.create_upgraded_genome(parent_creature._genome)
-	_create_creature(
-		parent_creature.family,
-		genome, 
-		parent_creature.body.position, 
-		random_angle(), 
-		parent_creature.generation)
-	
-func _on_creature_clicked(creature: Creature) -> void:
-	if _build_spawner_family == Constants.Family.NONE:
-		select_entity.emit(creature)
-		#_gui.select_entity(creature)
-		_camera.select_entity(creature)
+func _on_selector_clicked(creature: Creature) -> void:
+	_selected_entity = creature
+	select_entity.emit(creature)
 
 func _on_clock_timeout() -> void:
 	curr_time += 1
 	clock_tick.emit(self)
 	
 	_terrain.generate_fruits()
-	
-	#if curr_time % _generation_step == 0:
-		#_time_since_last_gen = 0
-		
-		#var highest_piki_age = 0.0
-		#for piki in curr_pikis:
-			#highest_piki_age = maxf(highest_piki_age, piki._age)
-		#piki_ga.evaluate_generation()
-		# there might be an issue here
-		#piki_ga.curr_generation += 1
-		
-		#var highest_aiko_age = 0.0
-		#for aiko in curr_aikos:
-			#highest_aiko_age = maxf(highest_aiko_age, aiko.calc_age())
-		#aiko_ga.evaluate_generation()
-		#aiko_ga.curr_generation += 1
 
 func _on_gui_toggled_spawn(family: Constants.Family) -> void:
 	_build_spawner_family = family
@@ -136,45 +92,16 @@ func _on_gui_toggled_spawn(family: Constants.Family) -> void:
 	if _build_spawner_placeholder:
 		add_child(_build_spawner_placeholder)
 
-func _create_creature(
-	family: Constants.Family,
-	genome: Genome, 
-	input_position: Vector2 = Vector2(0, 0), 
-	_input_rotation: float = random_angle(),
-	_prev_gen: int = 0
-	) -> void:
-	var creature: Creature = _scene_map[family].instantiate()
-	creature.generation = _prev_gen + 1
-	creature.add_genome(genome)
-	creature.death.connect(_on_creature_death)
-	creature.spawn.connect(_on_creature_spawn)
-	creature.clicked.connect(_on_creature_clicked)
-	add_child(creature)
-	creature.body.position = input_position
-	creature.body.rotation = _input_rotation
+func _on_spawner_despawned(creature: Creature) -> void:
+	if creature == _selected_entity:
+		select_entity.emit(null)
+	_selected_entity = null
 
-func _build_spawner(family: Constants.Family, input_position: Vector2):
+func _build_spawner(family: Constants.Family, input_position: Vector2) -> void:
 	if is_instance_valid(_build_spawner_placeholder):
 		var spawner: Spawner = SPAWNER_SCENE.instantiate()
+		spawner.despawned.connect(_on_spawner_despawned)
 		add_child(spawner)
 		spawner.add_family(family)
 		spawner.add_ga(_ga[family])
 		spawner.position = input_position
-
-func _spawn_initial_creature(
-	family: Constants.Family,
-	spawn_position: Vector2) -> void:
-	var creature_ga = _ga[Constants.Family.PIKI]
-	var genome = creature_ga.create_base_genome()
-	_create_creature(family, genome, spawn_position, random_angle())
-
-func random_pos(_min: Vector2, _max: Vector2):
-	var random = RandomNumberGenerator.new()
-	var pos = Vector2(
-		random.randf_range(_min.x, _max.x), 
-		random.randf_range(_min.y, _max.y)) - global_position
-	return pos
-
-func random_angle():
-	var random = RandomNumberGenerator.new()
-	return random.randf_range(-PI, PI)

@@ -102,8 +102,6 @@ func _create_base_genome() -> Genome:
 
 func _create_upgraded_genome() -> Genome:
 	var species = Utils.random_choice(_curr_species)
-	species.update()
-	
 	var baby_genome: Genome
 	_curr_genome_id += 1
 	#if not spawned_elite:
@@ -119,6 +117,7 @@ func _create_upgraded_genome() -> Genome:
 		var found_species = _find_species(baby_genome)
 		found_species.add_member(baby_genome)
 		baby_species = found_species
+		_evaluate_species(found_species)
 	else:
 		baby_species.add_member(baby_genome)
 	
@@ -186,17 +185,20 @@ func _make_new_species(founding_member: Genome) -> Species:
 	return new_species
 
 func acquire_genome() -> Genome:
-	var max_base_count = Utils.math_combination(
-		params.num_inputs * params.num_outputs, 
-		params.num_initial_links)
-	if _curr_genome_id <= max_base_count:
-		return _create_base_genome()
+	# var max_base_count = Utils.math_combination(
+	# 	(params.num_inputs +) * params.num_outputs, 
+	# 	params.num_initial_links)
+	var genome: Genome = null
+	if _curr_genome_id <= params.num_base_genomes:
+		genome = _create_base_genome()
 	else:
-		# random genome after filtering with fitness_treshold
-		return _create_upgraded_genome()
+		genome = _create_upgraded_genome()
+	genome.is_active = true
+	return genome
 
 func release_genome(genome: Genome) -> void:
-	var index = _curr_species.find(func (s: Species): return s.species_id == genome.species_id)
+	genome.is_active = false
+	var index = _curr_species.find_custom(func (s: Species): return s.species_id == genome.species_id)
 	var species = _curr_species[index]
 	_evaluate_species(species)
 	_curr_genomes.erase(genome)

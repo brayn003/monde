@@ -41,9 +41,16 @@ func add_member(genome: Genome):
 func update() -> void:
 	# members
 	_members.sort_custom(func (m1, m2): return m1.fitness > m2.fitness)
+	var alive_members: Array[Genome] = []
+	var dead_members: Array[Genome] = []
+	for member in _members:
+		if member.is_active:
+			alive_members.append(member)
+		else:
+			dead_members.append(member)
 	
 	# pool
-	var _pool = _members.filter(func (m: Genome): return !m.is_active)
+	var _pool = dead_members
 	if _pool.size() > _params.selection_threshold:
 		pool = _pool.slice(0, _params.selection_threshold)
 	else:
@@ -56,7 +63,7 @@ func update() -> void:
 	
 	# representative
 	if _params.update_species_rep:
-		representative = leader if _params.leader_is_rep else Utils.random_choice(_members)
+		representative = leader if _params.leader_is_rep else Utils.random_choice(pool)
 		
 	# age
 	var lowest_gen: int
@@ -70,9 +77,7 @@ func update() -> void:
 	
 	# mutation
 	var num_gens_no_improvement = highest_gen - leader.generation
-	if num_gens_no_improvement > _params.allowed_gens_no_improvement:
-		obliterate = true
-	elif num_gens_no_improvement > _params.enough_gens_to_change_things:
+	if num_gens_no_improvement > _params.enough_gens_to_change_things:
 		_curr_mutation_rate = Constants.MutationRate.HIGH
 	else:
 		_curr_mutation_rate = Constants.MutationRate.NORMAL
@@ -82,8 +87,25 @@ func update() -> void:
 	avg_fitness = get_avg_fitness()
 	avg_fitness_adjusted = avg_fitness * fit_modif
 
+	# obliterate
+	if alive_members.size() < 1 and num_gens_no_improvement > _params.allowed_gens_no_improvement:
+		obliterate = true
+
+	# print
+	print("Species %s has %d members, %d alive, %d dead" % [species_id, _members.size(), alive_members.size(), dead_members.size()])
+	var pool_fitness = pool.map(func (m: Genome): return m.fitness)
+	print("Pool fitness: %s" % [pool_fitness])
+
+	# trim members
+	var trimmed_members: Array[Genome] = []
+	trimmed_members.append_array(alive_members)
+	trimmed_members.append_array(pool)
+	trimmed_members.assign(Utils.arr_unique(trimmed_members) as Array[Genome])
+	_members = trimmed_members
+
+
 func get_avg_fitness() -> float:
-	"""Returns the average fitness of all members in the species
+	"""Returns the average fitness of all alive members in the species
 	"""
 	var total_fitness = 0
 	for member in _members:

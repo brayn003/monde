@@ -42,6 +42,13 @@ func sort_and_remove_duplicates(arr: Array) -> Array:
 		last_value = value
 	return new_array
 
+func arr_unique(arr: Array) -> Array:
+	var unique: Array = []
+	for item in arr:
+		if not unique.has(item):
+			unique.append(item)
+	return unique
+
 func math_factorial(num: int) -> int:
 	if num == 0 or num == 1: 
 		return 1

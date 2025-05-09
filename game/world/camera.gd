@@ -37,7 +37,7 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("camera_zoom_in"):
 		update_zoom()
 		
-func select_entity(creature: Creature):
+func _on_world_select_entity(creature: Creature):
 	selected_entity = creature
 		
 func update_zoom():

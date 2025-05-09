@@ -3,14 +3,14 @@ extends CanvasLayer
 
 signal clicked_build_spawner(family: Constants.Family)
 
-var selected_entity: Creature = null
+var _selected_entity: Creature = null
 
 @onready var _current_stats = $TopRight/Stats/Container/Panel/Label
 #@onready var _prev_gen_stats = $TopRight/PrevGen/Container/Panel/Label
 
-@onready var _creature_panel = $BottomLeft/OrganismPanel
-@onready var _creature_graph = $BottomLeft/OrganismPanel/Container/Panel/HBoxContainer/Graph
-@onready var _creature_stats = $BottomLeft/OrganismPanel/Container/Panel/HBoxContainer/Stats
+@onready var _creature_panel = $BottomLeft/CreaturePanel
+@onready var _creature_graph = $BottomLeft/CreaturePanel/Container/Panel/HBoxContainer/Graph
+@onready var _creature_stats = $BottomLeft/CreaturePanel/Container/Panel/HBoxContainer/Stats
 
 @onready var _map_inner_panel = $BottomRight/MapPanel/Container/Panel
 @onready var _map_viewport = $BottomRight/MapPanel/Container/Panel/SubViewportContainer/SubViewport
@@ -70,6 +70,6 @@ func _on_world_clock_tick(world: World) -> void:
 
 func _on_world_select_entity(creature: Creature) -> void:
 	_creature_panel.visible = !!creature
-	selected_entity = creature
+	_selected_entity = creature
 	_creature_graph.select_entity(creature)
 	_creature_stats.select_entity(creature)

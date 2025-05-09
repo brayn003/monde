@@ -7,9 +7,6 @@ func _init() -> void:
 	_max_energy = Constants.AIKO_MAX_ENERGY
 	_clock_speed = Constants.AIKO_CLOCK_SPEED
 	_max_age = Constants.AIKO_MAX_AGE
-	_offspring_wait = Constants.AIKO_OFFSPRING_WAIT
-	_offspring_initial_wait = Constants.AIKO_OFFSPRING_INITIAL_WAIT
-	_offspring_energy_cost = Constants.AIKO_OFFSPRING_ENERGY_COST
 	family = Constants.Family.AIKO
 	
 func _ready() -> void:

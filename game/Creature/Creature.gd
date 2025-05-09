@@ -8,8 +8,6 @@ enum ACTION {
 
 # signals
 signal death(organism: Creature)
-signal spawn(organism: Creature)
-signal clicked(organism: Creature)
 
 # hp
 var _max_hp = 10.0
@@ -22,12 +20,7 @@ var _energy = _initial_energy
 
 # sense
 var _food_count = 0
-var _food_wait_time = 0.0
-var _offspring_count = 0
-var _offspring_initial_wait = 20.0
-var _offspring_wait = 5.0
-var _offspring_curr_wait = _offspring_initial_wait
-var _offspring_energy_cost = 20.0
+var _food_wait = 0.0
 
 # metabolism
 var _metabolic_cost = 0.2
@@ -50,7 +43,6 @@ var _max_age = 60.0
 var _age = 0.0
 
 # public
-var generation = 0
 var family = Constants.Family.BASE
 
 @onready var body: CreatureBody = $Body
@@ -87,8 +79,6 @@ func _process_hp(_delta: float) -> void:
 
 func _process_age(delta: float) -> void:
 	_age += delta
-	if _age > _max_age:
-		_die()
 
 func _process_living_cost(delta: float) -> void:
 	var cost = _metabolic_cost * delta
@@ -97,49 +87,53 @@ func _process_living_cost(delta: float) -> void:
 	_deduct_energy(cost)
 
 func _process_cooldowns(delta: float) -> void:
-	if _offspring_curr_wait > 0:
-		_offspring_curr_wait -= delta
-	if _food_wait_time > 0:
-		_food_wait_time -= delta
+	if _food_wait > 0:
+		_food_wait -= delta
 
 func _on_body_body_entered(collision_body: Node) -> void:
 	if collision_body is ConsumableBody:
 		var fruit: Consumable = collision_body.get_parent()
-		if _energy <= _max_energy - fruit.ENERGY_VALUE and _food_wait_time <= 0:
+		if _energy <= _max_energy - fruit.ENERGY_VALUE and _food_wait <= 0:
 			_food_count += 1
 			_energy += fruit.ENERGY_VALUE
 			fruit.queue_free()
-			_food_wait_time = 1.0
+			_food_wait = 1.0
 
 func _on_clock_timeout() -> void:
 	if _is_born and not _is_dead:
+		# fitness
+		_genome.fitness = get_fitness()
+		# senses and actions
 		var senses = _sense()
 		var actions = _nn.update(senses)
 		_act(actions)
 
 func _act(actions: Array[float]) -> void:
 	body.curr_actions = actions
-	_spawn_offspring(actions)
 
 func _sense() -> Array[float]:
 	var senses: Array[float] = []
-	#senses.append_array([hp, energy])
-	#senses.append_array(body.sense_physical_state())
+	senses.append_array(_sense_state())
+	senses.append_array(body.sense_physical_state())
 	senses.append_array(body._sense_items_in_sight())
 	return senses
 
-func _get_fitness() -> float:
+func _sense_state() -> Array[float]:
+	var senses: Array[float] = []
+	senses.append(remap(_hp, 0, _max_hp, 0, 1))
+	senses.append(remap(_energy, 0, _max_energy, 0, 1))
+	return senses
+
+func get_fitness() -> float:
 	var _fitness = 0.0
-	_fitness += pow(_offspring_count, 3) * 100
-	_fitness += pow(_food_count, 2) * 100
-	_fitness += _age - _max_hp - _initial_energy
+	_fitness += _food_count
 	return _fitness
 
 func _die() -> void:
 	_is_dead = true
 	_died_on = Time.get_unix_time_from_system()
 	_clock.stop()
-	_genome.fitness = _get_fitness()
+	_genome.fitness = get_fitness()
 	death.emit(self)
 
 func _deduct_hp(damage: float) -> void:
@@ -155,14 +149,6 @@ func _deduct_energy(cost: float) -> void:
 		_deduct_hp(absf(diff))
 	else:
 		_energy -= cost
-
-func _spawn_offspring(_actions: Array[float]) -> void:
-	var population = get_tree().get_node_count_in_group("pikis")
-	if population <= Constants.MAX_PIKIS and _energy > 20 and _offspring_curr_wait <= 0:
-		_deduct_energy(_offspring_energy_cost)
-		_offspring_count += 1
-		spawn.emit(self)
-		_offspring_curr_wait = _offspring_wait
 
 func add_genome(input_genome: Genome) -> void:
 	_genome = input_genome

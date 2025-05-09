@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://ddwctcw2qky8d"]
+[gd_scene load_steps=11 format=3 uid="uid://ddwctcw2qky8d"]
 
 [ext_resource type="Script" uid="uid://66gupgpr8oof" path="res://game/World/World.gd" id="1_naktm"]
 [ext_resource type="Script" uid="uid://dptusgm1o72uq" path="res://game/World/WorldBounds.gd" id="2_a2jxo"]
 [ext_resource type="Script" uid="uid://ly0cm1bagcuc" path="res://game/World/WorldTerrain.gd" id="2_n41dy"]
 [ext_resource type="Script" uid="uid://o8g3cw2xy4l0" path="res://game/World/WorldBoundsRender.gd" id="3_o7ah8"]
+[ext_resource type="Script" uid="uid://cf43jxbogkqiv" path="res://game/World/WorldSelector.gd" id="5_p5fvg"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_owxwr"]
 normal = Vector2(0, 1)
@@ -15,6 +16,8 @@ normal = Vector2(-1, 0)
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_uri2a"]
 normal = Vector2(1, 0)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_p5fvg"]
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_naktm")
@@ -43,3 +46,11 @@ shape = SubResource("WorldBoundaryShape2D_uri2a")
 
 [node name="Terrain" type="Node2D" parent="."]
 script = ExtResource("2_n41dy")
+
+[node name="Selector" type="Node2D" parent="."]
+script = ExtResource("5_p5fvg")
+
+[node name="Area" type="Area2D" parent="Selector"]
+
+[node name="Collision" type="CollisionShape2D" parent="Selector/Area"]
+shape = SubResource("CircleShape2D_p5fvg")

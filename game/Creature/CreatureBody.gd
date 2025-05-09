@@ -22,22 +22,10 @@ var curr_actions = []
 func _ready() -> void:
 	_ready_collision_objects()
 	_ready_raycasts()
-	_ready_clickable_area()
 
 func _ready_collision_objects() -> void:
 	var collision_body = $CollisionBody
 	collision_body.shape.radius = _size / 2
-	
-func _ready_clickable_area() -> void:
-	var clickable_area = Area2D.new()
-	var clickable_area_collision = CollisionShape2D.new()
-	clickable_area.name = "Clickable"
-	clickable_area_collision.name = "CollisionClickable"
-	clickable_area_collision.shape = CircleShape2D.new()
-	clickable_area_collision.shape.radius = (_size / 2) + 5.0
-	clickable_area.add_child(clickable_area_collision)
-	clickable_area.input_event.connect(_on_clickable_input_event)
-	add_child(clickable_area)
 
 func _ready_raycasts() -> void:
 	# Create ray casters and append them in an array
@@ -85,12 +73,12 @@ func _action_turn(state: PhysicsDirectBodyState2D) -> void:
 			#hp += 1.0 * delta
 			#consume_energy(1.0 * delta)
 
-#func sense_physical_state() -> Array[float]:
-	#var senses: Array[float] = []
-	#senses.append(linear_velocity.length())
-	#senses.append(remap(linear_velocity.angle(), -TAU, TAU, -1, 1))
-	#senses.append(remap(rotation, -TAU, TAU, -1, 1))
-	#return senses
+func sense_physical_state() -> Array[float]:
+	var senses: Array[float] = []
+	senses.append(remap(linear_velocity.length(), 0, _thrust.length(), 0, 1))
+	senses.append(remap(linear_velocity.angle(), -TAU, TAU, -1, 1))
+	senses.append(remap(rotation, -TAU, TAU, -1, 1))
+	return senses
 
 func _sense_items_in_sight() -> Array[float]:
 	var senses: Array[float] = []
@@ -117,7 +105,7 @@ func _sense_items_in_sight() -> Array[float]:
 				if collision_item is ConsumableBody:
 					_item_type = 1.0
 				elif collision_item is PlantBody:
-					_item_type = 0.3
+					_item_type = 0.2
 				elif collision_item is AikoBody:
 					_item_type = -0.9
 				elif collision_item is PikiBody:
@@ -141,7 +129,3 @@ func _sense_items_in_sight() -> Array[float]:
 	
 	return senses
 
-func _on_clickable_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
-	if event is InputEventMouseButton and event.is_pressed():
-		var parent = get_parent()
-		parent.clicked.emit(parent)

@@ -7,10 +7,7 @@ var _keys = [
 	"_energy", 
 	"_age",
 	"_food_count", 
-	"_food_wait_time", 
-	"_offspring_count", 
-	"_offspring_wait_time", 
-	"generation"]
+	"_food_wait"]
 var _fields: Dictionary = {}
 
 func _process(_delta: float) -> void:
